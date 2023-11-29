@@ -7,67 +7,6 @@ import torch
 from vmas.simulator.core import World, Agent, Landmark
 from vmas.simulator.scenario import BaseScenario
 
-
-
-class FFNN(torch.nn.Module):
-    def __init__(self, input_dim: int, hidden_dim: int, output_dim: int, num_layers: int = 1, initialization = torch.nn.init.uniform_) -> None:
-        """
-        A multi-layer feed-forward neural network that applies a linear transformation, followed by a ReLU
-        nonlinearity, at each layer.
-        Parameters
-        ----------
-        embedding_dim : int
-            Number of dimensions of an input embedding.
-        hidden_dim : int
-            Number of dimensions for the hidden layer(s).
-        output_dim : int
-            Number of dimensions for the output layer.
-        num_layers : int
-            Number of hidden layers to initialize.
-        initialization : torch.nn.init funciton
-            Distribution to initialize weights from
-        """
-        super().__init__()
-
-        assert num_layers > 0
-
-        self.input_hidden = torch.nn.Linear(in_features=input_dim, out_features=hidden_dim)
-        initialization(self.input_hidden.weight)
-        
-        self.hidden_hidden = None
-        
-        if num_layers > 1:
-            self.hidden_hidden = torch.nn.ModuleList(
-                [torch.nn.Linear(in_features=hidden_dim, out_features=hidden_dim) for _ in range(num_layers - 1)]
-            )
-            for idx, layer in enumerate(self.hidden_hidden):
-                initialization(layer.weight)
-                
-        self.hidden_output = torch.nn.Linear(in_features=hidden_dim, out_features=output_dim)
-        initialization(self.hidden_output.weight)
-
-    def forward(self, obs: torch.Tensor) -> torch.Tensor:
-        """
-        Computes a forward pass through each of the network layers using the given input observation.
-        Parameters
-        ----------
-        obs : torch.Tensor
-            Input tensor of observations of shape ``(batch_size, observation_dimension, 1)``.
-        Returns
-        -------
-        torch.Tensor
-            Output tensor resulting from forward pass of shape ``(batch_size, c_dim, 1)``.
-        """
-        
-        out = torch.nn.functional.relu(self.input_hidden(obs))
-        if self.hidden_hidden is not None:
-            for hidden_hidden in self.hidden_hidden:
-                
-                out = torch.nn.functional.relu(hidden_hidden(out))
-                
-        out = self.hidden_output(out)/1000000
-        return out
-
 class Scenario(BaseScenario):
     def make_world(self, batch_dim: int, device: torch.device, **kwargs):
         world = World(batch_dim=batch_dim, device=device, dim_c=10)
@@ -123,11 +62,9 @@ class Scenario(BaseScenario):
             self.world.agents[0].goal_a.color = self.world.agents[0].goal_b.color
             self.world.agents[1].goal_a.color = self.world.agents[1].goal_b.color
 
-            # Make everything for noise (need to make this not hard-coded)
+            # Make everything for memory
             for agent in self.world.agents:
-                # agent.noise = FFNN(21, 64, self.world.dim_c, 3)
                 agent.memory = torch.zeros((self.world.batch_dim, 21, 500))
-                # agent.noise = torch.distributions.Beta(torch.rand(1), torch.rand(1))
 
         # set random initial states
         for agent in self.world.agents:

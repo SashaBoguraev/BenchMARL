@@ -82,6 +82,7 @@ class Scenario(BaseScenario):
             if idx == 0:
                 landmark.set_pos(
                     torch.Tensor(
+                        # Pre-selected using torch.rand
                         [-0.3065, -0.7480],
                     ).repeat(self.world.batch_dim, 1),
                     batch_index=env_index,
@@ -89,6 +90,7 @@ class Scenario(BaseScenario):
             elif idx == 1: 
                 landmark.set_pos(
                     torch.Tensor(
+                        # Pre-selected using torch.rand
                         [-0.2694, -0.6261]
                     ).repeat(self.world.batch_dim, 1),
                     batch_index=env_index,
@@ -96,6 +98,7 @@ class Scenario(BaseScenario):
             elif idx == 2: 
                 landmark.set_pos(
                     torch.Tensor(
+                        # Pre-selected using torch.rand
                         [ 0.8436, -0.0874]
                     ).repeat(self.world.batch_dim, 1),
                     batch_index=env_index,

@@ -2192,16 +2192,15 @@ class World(TorchVectorizedObject):
             ) * self._sub_dt
             entity.state.rot += entity.state.ang_vel * self._sub_dt
 
-    # Get weights memory vector for attention                   
+    # Performs attention to receive weighted memory vector                 
     def weight_mem(self, obs, agent):
         MT = torch.transpose(agent.memory, 1, 2)
         obs = torch.unsqueeze(obs, 2)
         W = torch.nn.functional.softmax(torch.bmm(MT, obs), dim = 1)
         S = torch.bmm(torch.transpose(W, 1, 2), MT)
-        # print("S", torch.count_nonzero(torch.Tensor.squeeze(S, 1)))
-        # print("S", torch.Tensor.squeeze(S, 1))
         return torch.Tensor.squeeze(S, 1)
 
+    # Makes observation of Environment
     def observation(self, agent: Agent):
         # goal color
         goal_color = agent.goal_b.color
