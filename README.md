@@ -1,7 +1,8 @@
 # Emergent Idiolects 
 ### Forked from [FacebookResearch/BenchMARL](https://github.com/facebookresearch/BenchMARL)
 
-#### This repository is a working collection of Sasha Boguraev's Undergraduate Honors Thesis. It draws on both the [Vectorized Multi Agent Simulators](https://github.com/proroklab/VectorizedMultiAgentSimulator) and [BenchMARL](https://github.com/facebookresearch/BenchMARL).
+#### This repository is a working collection of Sasha Boguraev's Undergraduate Honors Thesis. It draws extensively on both the [Vectorized Multi Agent Simulators](https://github.com/proroklab/VectorizedMultiAgentSimulator) and [BenchMARL](https://github.com/facebookresearch/BenchMARL). As an active fork of BenchMARL, this repo also provides full BenchMARL functionality. I take no credit for any of BenchMARL's or VMAS' implementation or functionality, and attribute all credit for those implementations to the respective authors.
+
 
 ## Premise for Work
 
@@ -18,13 +19,11 @@ The provided scripts train agents within these populations using [Multi-Agent De
 
 This repository will further include the code necessary to evaluate models, once they have been developed.
 
-This repository, as an active fork, seperately provides full BenchMARL functionality. I take no credit for any of BenchMARL's or VMAS' implementation or functionality, and attribute all creidt to the respective authors.
-
 ## Different Populations:
 
 ### Universal Population
 
-The universal population merely consists of agents trained on the VMAS simple reference task, which itself has been adapted from OpenAI's [MPEs](https://github.com/openai/multiagent-particle-envs). In this scenario, there are two agents, and three landmarks. Agents' goals consist of desiring the other agent to move to a specific location. However, goals are not observable agents. In its stead, agents can send "communications" consisting of an n-dimensional vector (base setting of 10), in an attempt to communicate their goals. Agents are cooperatively rewarded by sum distance of their goal agents location from the goal target.
+The universal population merely consists of agents trained on the VMAS simple reference task, which itself has been adapted from OpenAI's [MPEs](https://github.com/openai/multiagent-particle-envs). In this scenario, there are two agents, and three landmarks. Agents' goals consist of desiring the other agent to move to a specific location. However, goals are not observable agents. In its stead, agents can send "communications" consisting of an n-dimensional vector (base setting of 10), in an attempt to complete their goals. Our reward function is the L2 distance between their goal agent (the agent they want to move to a specific target) and goal landmark (the landmark they want the agent to move to). Agents are cooperatively rewarded by the sum of their individual rewards.
 
 ### Idiolect Population (Noise Regimen)
 
@@ -66,6 +65,8 @@ To train the respective models we have provided the `train_model.sh` script. Thi
 1. `SCENARIO`: One of "universal", "noise", "memory" or "both", corresponding to the regimen you would like to train your population with. This is a REQUIRED keyword.
 2. `ENVIRONMENT`: One of "constant" or "variable", depending on whether you want your enviornment to be constant or changing during training. This is a REQUIRED keyword.
 3. `ITERS`: Number representing the number of populations you would like to train seperately. This is a REQUIRED keyword. 
+
+*You MUST be within the IdiolectEvo directory to run these commands*
 
 *If any variable is not specified, your model will train with whatever regimen is stored in the environment variables.*
 
