@@ -35,13 +35,13 @@ In this case, we simulate idiolects by peturbing the communcation sent by agents
 
 ### Idiolect Population (Memory Regimen)
 
-`IdiolectEvo/VectorizedMultiAgentSimulator/vmas/scenarios/mpe/simple_reference_mem_buffer`
+`IdiolectEvo/VectorizedMultiAgentSimulator/vmas/scenarios/mpe/simple_reference_idiolect_mem_buffer`
 
 In this scenario, agents are provided a memory buffer of five times the size of an episode. This memory buffer gets progressively filled by the most recent observations, such that it always consists of the most recent `5*E` observations (where `E = Episode Length`). Using soft-attention, an agents current observation attends to all observations in the memory buffer, and a weighted memory vector is created, weighted by dot-product similarity to the current observation. This weighted memory vector is then appended to the observation as input to the policy network. This attention mechanism is implemented in `World.weight_mem` of `VectorizedMultiAgentSimulator/vmas/simulator/core.py`.
 
 ### Idiolect Population (Noise + Memory Regimen)
 
-`IdiolectEvo/VectorizedMultiAgentSimulator/vmas/scenarios/mpe/simple_reference_noise_mem`
+`IdiolectEvo/VectorizedMultiAgentSimulator/vmas/scenarios/mpe/simple_reference_idiolect_noise_mem`
 
 In this population both of the prior regimens are combined.
 
@@ -49,8 +49,8 @@ In this population both of the prior regimens are combined.
 
 `IdiolectEvo/VectorizedMultiAgentSimulator/vmas/scenarios/mpe/simple_reference_const`
 `IdiolectEvo/VectorizedMultiAgentSimulator/vmas/scenarios/mpe/simple_reference_idiolect_const`
-`IdiolectEvo/VectorizedMultiAgentSimulator/vmas/scenarios/mpe/simple_reference_mem_buffer_const`
-`IdiolectEvo/VectorizedMultiAgentSimulator/vmas/scenarios/mpe/simple_reference_noise_mem_const`
+`IdiolectEvo/VectorizedMultiAgentSimulator/vmas/scenarios/mpe/simple_reference_idiolect_mem_buffer_const`
+`IdiolectEvo/VectorizedMultiAgentSimulator/vmas/scenarios/mpe/simple_reference_idiolect_noise_mem_const`
 
 By default, environments have landmarks which randomly change location every episode. To explore additional behavior, I provide "constant environments", which keep landmarks constant throughout training time.
 
