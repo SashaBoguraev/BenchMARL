@@ -48,11 +48,11 @@ By default, environments have landmarks which randomly change location every epi
 To use this repo, please clone locally to access the configs and scripts:
 ```bash
 git clone https://github.com/SashaBoguraev/IdiolectEvo.git
-pip install -e BenchMARL
+pip install -e IdiolectEvo
 ```
 Further, install the dependencies for VMAS:
 ```bash
-cd VectorizedMultiAgentSimulator
+cd IdiolectEvo/VectorizedMultiAgentSimulator
 pip install -e .
 ```
 These packages only include necessary packages. To include full functionality of logging and run visualization, one may want to install the following packages:
