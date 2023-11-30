@@ -22,26 +22,31 @@ This repository will further include the code necessary to evaluate models, once
 ## Different Populations:
 
 ### Universal Population
+
 `IdiolectEvo/VectorizedMultiAgentSimulator/vmas/scenarios/mpe/simple_reference`
 
 The universal population merely consists of agents trained on the VMAS simple reference task, which itself has been adapted from OpenAI's [MPEs](https://github.com/openai/multiagent-particle-envs). In this scenario, there are two agents, and three landmarks. Agents' goals consist of desiring the other agent to move to a specific location. However, goals are not observable agents. In its stead, agents can send "communications" consisting of an n-dimensional vector (base setting of 10), in an attempt to complete their goals. Our reward function is the L2 distance between their goal agent (the agent they want to move to a specific target) and goal landmark (the landmark they want the agent to move to). Agents are cooperatively rewarded by the sum of their individual rewards.
 
 ### Idiolect Population (Noise Regimen)
+
 `IdiolectEvo/VectorizedMultiAgentSimulator/vmas/scenarios/mpe/simple_reference_idiolect`
 
 In this case, we simulate idiolects by peturbing the communcation sent by agents. At the start of the simulation, agents are each assigned two parameters, &alpha; and &beta; at random. At training time, a noise vector of the same size as the communication vector, is sampled from this distribution for each agent, and added in element-wise manner to the communication.
 
 ### Idiolect Population (Memory Regimen)
+
 `IdiolectEvo/VectorizedMultiAgentSimulator/vmas/scenarios/mpe/simple_reference_mem_buffer`
 
 In this scenario, agents are provided a memory buffer of five times the size of an episode. This memory buffer gets progressively filled by the most recent observations, such that it always consists of the most recent `5*E` observations (where `E = Episode Length`). Using soft-attention, an agents current observation attends to all observations in the memory buffer, and a weighted memory vector is created, weighted by dot-product similarity to the current observation. This weighted memory vector is then appended to the observation as input to the policy network.
 
 ### Idiolect Population (Noise + Memory Regimen)
+
 `IdiolectEvo/VectorizedMultiAgentSimulator/vmas/scenarios/mpe/simple_reference_noise_mem`
 
 In this population both of the prior regimens are combined.
 
 ### Constant environments
+
 `IdiolectEvo/VectorizedMultiAgentSimulator/vmas/scenarios/mpe/simple_reference_const`
 `IdiolectEvo/VectorizedMultiAgentSimulator/vmas/scenarios/mpe/simple_reference_idiolect_const`
 `IdiolectEvo/VectorizedMultiAgentSimulator/vmas/scenarios/mpe/simple_reference_mem_buffer_const`
