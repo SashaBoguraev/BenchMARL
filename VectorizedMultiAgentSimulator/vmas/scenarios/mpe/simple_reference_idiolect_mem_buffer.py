@@ -1,6 +1,4 @@
-#  Copyright (c) 2022-2023.
-#  ProrokLab (https://www.proroklab.org/)
-#  All rights reserved.
+#  Adapted from work by ProrokLab (https://www.proroklab.org/)
 
 import torch
 

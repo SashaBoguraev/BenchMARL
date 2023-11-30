@@ -43,6 +43,7 @@ from .vmas.simple_reference_idiolect_noise_mem import TaskConfig as SimpleRefIdi
 from .vmas.simple_reference_const import TaskConfig as ConstSimpleRefConfig
 from .vmas.simple_reference_idiolect_const import TaskConfig as ConstSimpleRefIdioConfig
 from .vmas.simple_reference_idiolect_mem_buffer_const import TaskConfig as ConstSimpleRefIdioMemConfig
+from .vmas.simple_reference_idiolect_noise_mem_const import TaskConfig as ConstSimpleRefIdioNoiseMemConfig
 
 # This is a registry mapping task config schemas names to their python dataclass
 # It is used by hydra to validate loaded configs.
@@ -61,6 +62,7 @@ _task_class_registry = {
     "vmas_simple_reference_const_config": ConstSimpleRefConfig,
     "vmas_simple_reference_idiolect_const_config": ConstSimpleRefIdioConfig,
     "vmas_simple_reference_idiolect_mem_buffer_const_config": ConstSimpleRefIdioMemConfig,
+    "vmas_simple_reference_idiolect_noise_mem_const_config": ConstSimpleRefIdioNoiseMemConfig,
     "pettingzoo_multiwalker_config": MultiwalkerConfig,
     "pettingzoo_waterworld_config": WaterworldConfig,
     "pettingzoo_simple_adversary_config": SimpleAdversaryConfig,
