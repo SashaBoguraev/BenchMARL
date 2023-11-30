@@ -17,10 +17,12 @@ then
         for i in $(seq 1 $ITERS); 
         do python3 fine_tuned/vmas/vmas_run.py task=vmas/simple_reference_const algorithm=maddpg algorithm.share_param_critic=false; 
         done;
-    else
+    elif [[ $ENVIRONMENT=="variable" ]]
         for i in $(seq 1 $ITERS); 
         do python3 fine_tuned/vmas/vmas_run.py task=vmas/simple_reference algorithm=maddpg algorithm.share_param_critic=false; 
         done;
+    else
+        echo "Please select a valid landmark setting"
     fi
 elif [[ $SCENARIO=="noise" ]]
 then 
@@ -29,10 +31,12 @@ then
         for i in $(seq 1 $ITERS); 
         do python3 fine_tuned/vmas/vmas_run.py task=vmas/simple_reference_idiolect_const algorithm=maddpg algorithm.share_param_critic=false; 
         done;
-    else
+    elif [[ $ENVIRONMENT=="variable" ]]
         for i in $(seq 1 $ITERS); 
         do python3 fine_tuned/vmas/vmas_run.py task=vmas/simple_reference_idiolect algorithm=maddpg algorithm.share_param_critic=false; 
         done;
+    else
+        echo "Please select a valid landmark setting"
     fi
 elif [[ $SCENARIO=="memory" ]]
 then 
@@ -41,10 +45,12 @@ then
         for i in $(seq 1 $ITERS); 
         do python3 fine_tuned/vmas/vmas_run.py task=vmas/simple_reference_idiolect_mem_buffer_const algorithm=maddpg algorithm.share_param_critic=false; 
         done;
-    else
+    elif [[ $ENVIRONMENT=="variable" ]]
         for i in $(seq 1 $ITERS); 
         do python3 fine_tuned/vmas/vmas_run.py task=vmas/simple_reference_idiolect_mem_buffer algorithm=maddpg algorithm.share_param_critic=false; 
         done;
+    else
+        echo "Please select a valid landmark setting"
     fi
 elif [[ $SCENARIO=="both" ]]
 then 
@@ -53,10 +59,12 @@ then
         for i in $(seq 1 $ITERS); 
         do python3 fine_tuned/vmas/vmas_run.py task=vmas/simple_reference_idiolect_noise_mem_const algorithm=maddpg algorithm.share_param_critic=false; 
         done;
-    else
+    elif [[ $ENVIRONMENT=="variable" ]]
         for i in $(seq 1 $ITERS); 
         do python3 fine_tuned/vmas/vmas_run.py task=vmas/simple_reference_idiolect_noise_mem algorithm=maddpg algorithm.share_param_critic=false; 
         done;
+    else
+        echo "Please select a valid landmark setting"
     fi
 else
 echo "Please select valid scenario"
