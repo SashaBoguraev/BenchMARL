@@ -57,7 +57,7 @@ By default, environments have landmarks which randomly change location every epi
 
 ## Setup
 
-To use this repo, please clone locally to access the configs and scripts:
+To use this repo, please clone locally to access the configs and scripts, and install BenchMARL dependencies:
 ```bash
 git clone https://github.com/SashaBoguraev/IdiolectEvo.git
 pip install -e IdiolectEvo
