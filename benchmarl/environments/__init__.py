@@ -8,15 +8,18 @@ from .common import Task
 from .pettingzoo.common import PettingZooTask
 from .smacv2.common import Smacv2Task
 from .vmas.common import VmasTask
+from .idiolectevo.common import IdiolectEvoTask
 
 # This is a registry mapping "envname/task_name" to the EnvNameTask.TASK_NAME enum
 # It is used by automatically load task enums from yaml files
 task_config_registry = {}
-for env in [VmasTask, Smacv2Task, PettingZooTask]:
+for env in [VmasTask, Smacv2Task, PettingZooTask, IdiolectEvoTask]:
     env_config_registry = {
         f"{env.env_name()}/{task.name.lower()}": task for task in env
     }
     task_config_registry.update(env_config_registry)
+
+print(task_config_registry)
 
 
 from .pettingzoo.multiwalker import TaskConfig as MultiwalkerConfig
@@ -44,6 +47,8 @@ from .vmas.simple_reference_const import TaskConfig as ConstSimpleRefConfig
 from .vmas.simple_reference_idiolect_const import TaskConfig as ConstSimpleRefIdioConfig
 from .vmas.simple_reference_idiolect_mem_buffer_const import TaskConfig as ConstSimpleRefIdioMemConfig
 from .vmas.simple_reference_idiolect_noise_mem_const import TaskConfig as ConstSimpleRefIdioNoiseMemConfig
+from .idiolectevo.speed_old import TaskConfig as SpeedOldConfig
+from .idiolectevo.speed_new import TaskConfig as SpeedNewConfig
 
 # This is a registry mapping task config schemas names to their python dataclass
 # It is used by hydra to validate loaded configs.
@@ -73,4 +78,6 @@ _task_class_registry = {
     "pettingzoo_simple_spread_config": SimpleSpreadConfig,
     "pettingzoo_simple_tag_config": SimpleTagConfig,
     "pettingzoo_simple_world_comm_config": SimpleWorldComm,
+    "idiolectevo_speed_old": SpeedOldConfig,
+    "idiolectevo_speed_new": SpeedNewConfig,
 }

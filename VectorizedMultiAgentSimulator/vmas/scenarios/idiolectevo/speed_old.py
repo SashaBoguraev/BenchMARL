@@ -1,7 +1,8 @@
 #  Copyright (c) 2022-2023.
 #  ProrokLab (https://www.proroklab.org/)
 #  All rights reserved.
-x
+# Just simple_reference environment
+
 import torch
 
 from vmas.simulator.core import World, Agent, Landmark

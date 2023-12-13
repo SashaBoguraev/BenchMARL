@@ -1,19 +1,14 @@
-#  Copyright (c) 2022-2023.
-#  ProrokLab (https://www.proroklab.org/)
-#  All rights reserved.
-x
 import torch
 
-from vmas.simulator.core import World, Agent, Landmark
-from vmas.simulator.scenario import BaseScenario
-
+from VectorizedMultiAgentSimulator.vmas.simulator.core import World, Agent, Landmark
+from VectorizedMultiAgentSimulator.vmas.simulator.scenario import BaseScenario
 
 class Scenario(BaseScenario):
     def make_world(self, batch_dim: int, device: torch.device, **kwargs):
         world = World(batch_dim=batch_dim, device=device, dim_c=10)
 
         n_agents = 2
-        n_landmarks = 3
+        n_landmarks = 6
 
         # Add agents
         for i in range(n_agents):
@@ -49,15 +44,24 @@ class Scenario(BaseScenario):
                 agent.color = torch.tensor(
                     [0.25, 0.25, 0.25], device=self.world.device, dtype=torch.float32
                 )
-            # random properties for landmarks
+            # set colors for landmarks
             self.world.landmarks[0].color = torch.tensor(
-                [0.75, 0.25, 0.25], device=self.world.device, dtype=torch.float32
+                [1, 0, 0], device=self.world.device, dtype=torch.float32
             )
             self.world.landmarks[1].color = torch.tensor(
-                [0.25, 0.75, 0.25], device=self.world.device, dtype=torch.float32
+                [1, 1, 0], device=self.world.device, dtype=torch.float32
             )
             self.world.landmarks[2].color = torch.tensor(
-                [0.25, 0.25, 0.75], device=self.world.device, dtype=torch.float32
+                [0, 1, 0], device=self.world.device, dtype=torch.float32
+            )
+            self.world.landmarks[3].color = torch.tensor(
+                [0, 1, 1], device=self.world.device, dtype=torch.float32
+            )
+            self.world.landmarks[4].color = torch.tensor(
+                [0, 0, 1], device=self.world.device, dtype=torch.float32
+            )
+            self.world.landmarks[5].color = torch.tensor(
+                [1, 0, 1], device=self.world.device, dtype=torch.float32
             )
             # special colors for goals
             self.world.agents[0].goal_a.color = self.world.agents[0].goal_b.color
