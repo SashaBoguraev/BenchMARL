@@ -5,6 +5,7 @@
 #
 
 import importlib
+import importlib.util
 
 _has_hydra = importlib.util.find_spec("hydra") is not None
 

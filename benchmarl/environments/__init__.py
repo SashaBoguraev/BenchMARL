@@ -19,8 +19,6 @@ for env in [VmasTask, Smacv2Task, PettingZooTask, IdiolectEvoTask]:
     }
     task_config_registry.update(env_config_registry)
 
-print(task_config_registry)
-
 
 from .pettingzoo.multiwalker import TaskConfig as MultiwalkerConfig
 from .pettingzoo.simple_adverasary import TaskConfig as SimpleAdversaryConfig
