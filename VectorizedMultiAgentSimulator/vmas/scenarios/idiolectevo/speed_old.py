@@ -8,16 +8,7 @@ import torch
 from vmas.simulator.core import World, Agent, Landmark
 from vmas.simulator.scenario import BaseScenario
 
-import json, os
-from datetime import datetime
-
-now = datetime.now()
-dt_string = now.strftime("%d_%m_%Y_%H_%M_%S")
-output_file = '/Users/sashaboguraev/Desktop/Cornell/College Scholar/BenchMARL/outputs/experiment_results_'+dt_string+'.json'
-
-
 class Scenario(BaseScenario):
-
     def make_world(self, batch_dim: int, device: torch.device, **kwargs):
         world = World(batch_dim=batch_dim, device=device, dim_c=10)
 
