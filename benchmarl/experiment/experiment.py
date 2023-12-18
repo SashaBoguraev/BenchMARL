@@ -324,9 +324,15 @@ class Experiment(CallbackNotifier):
         self.total_frames = 0
         self.n_iters_performed = 0
         self.mean_return = 0
+        self.min_return = 0
+        self.max_return = 0
 
         if self.config.restore_file is not None:
             self._load_experiment()
+        
+        self.mean_returns = []
+        self.min_returns = []
+        self.max_returns = []
 
     @property
     def on_policy(self) -> bool:
@@ -503,10 +509,10 @@ class Experiment(CallbackNotifier):
             on_policy=self.on_policy,
         )
 
-    def run(self):
+    def run(self, eval = False):
         """Run the experiment until completion."""
         try:
-            self._collection_loop()
+            self._collection_loop(eval=eval)
         except KeyboardInterrupt as interrupt:
             print("\n\nExperiment was closed gracefully\n\n")
             self.close()
@@ -516,7 +522,7 @@ class Experiment(CallbackNotifier):
             self.close()
             raise err
 
-    def _collection_loop(self):
+    def _collection_loop(self, eval = False):
         pbar = tqdm(
             initial=self.n_iters_performed,
             total=self.config.get_max_n_iters(self.on_policy),
@@ -534,48 +540,55 @@ class Experiment(CallbackNotifier):
                 total_frames=self.total_frames,
                 task=self.task,
                 step=self.n_iters_performed,
+                eval=eval
             )
+            if eval:
+                episode_reward = self.mean_return[1]
+                reward = self.mean_return[2]
+                self.mean_return = self.mean_return[0]
+            
             pbar.set_description(f"mean return = {self.mean_return}", refresh=False)
 
             # Callback
             self.on_batch_collected(batch)
 
             # Loop over groups
-            training_start = time.time()
-            for group in self.group_map.keys():
-                group_batch = batch.exclude(*self._get_excluded_keys(group))
-                group_batch = self.algorithm.process_batch(group, group_batch)
-                group_batch = group_batch.reshape(-1)
-                self.replay_buffers[group].extend(group_batch)
+            if not eval:
+                training_start = time.time()
+                for group in self.group_map.keys():
+                    group_batch = batch.exclude(*self._get_excluded_keys(group))
+                    group_batch = self.algorithm.process_batch(group, group_batch)
+                    group_batch = group_batch.reshape(-1)
+                    self.replay_buffers[group].extend(group_batch)
 
-                training_tds = []
-                for _ in range(self.config.n_optimizer_steps(self.on_policy)):
-                    for _ in range(
-                        self.config.train_batch_size(self.on_policy)
-                        // self.config.train_minibatch_size(self.on_policy)
-                    ):
-                        training_tds.append(self._optimizer_loop(group))
-                training_td = torch.stack(training_tds)
-                self.logger.log_training(
-                    group, training_td, step=self.n_iters_performed
-                )
+                    training_tds = []
+                    for _ in range(self.config.n_optimizer_steps(self.on_policy)):
+                        for _ in range(
+                            self.config.train_batch_size(self.on_policy)
+                            // self.config.train_minibatch_size(self.on_policy)
+                        ):
+                            training_tds.append(self._optimizer_loop(group))
+                    training_td = torch.stack(training_tds)
+                    self.logger.log_training(
+                        group, training_td, step=self.n_iters_performed
+                    )
 
-                # Callback
-                self.on_train_end(training_td, group)
+                    # Callback
+                    self.on_train_end(training_td, group)
 
-                # Exploration update
-                if isinstance(self.group_policies[group], TensorDictSequential):
-                    explore_layer = self.group_policies[group][-1]
-                else:
-                    explore_layer = self.group_policies[group]
-                if hasattr(explore_layer, "step"):  # Step exploration annealing
-                    explore_layer.step(current_frames)
+                    # Exploration update
+                    if isinstance(self.group_policies[group], TensorDictSequential):
+                        explore_layer = self.group_policies[group][-1]
+                    else:
+                        explore_layer = self.group_policies[group]
+                    if hasattr(explore_layer, "step"):  # Step exploration annealing
+                        explore_layer.step(current_frames)
 
-            # Update policy in collector
-            self.collector.update_policy_weights_()
+                # Update policy in collector
+                self.collector.update_policy_weights_()
 
             # Timers
-            training_time = time.time() - training_start
+            training_time = time.time() - training_start if not eval else 0
             iteration_time = collection_time + training_time
             self.total_time += iteration_time
             self.logger.log(

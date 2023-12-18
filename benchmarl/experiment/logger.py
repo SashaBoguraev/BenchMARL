@@ -87,6 +87,7 @@ class Logger:
         task: Task,
         total_frames: int,
         step: int,
+        eval = False
     ) -> float:
         to_log = {}
         json_metrics = {}
@@ -140,8 +141,12 @@ class Logger:
                 }
             )
         self.log(to_log, step=step)
-        return mean_group_return.mean().item()
-
+        
+        if eval:
+            return mean_group_return.mean().item(), episode_reward, reward
+        else:
+            return mean_group_return.mean().item()
+        
     def log_training(self, group: str, training_td: TensorDictBase, step: int):
         if not len(self.loggers):
             return
