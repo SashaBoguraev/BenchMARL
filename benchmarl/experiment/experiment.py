@@ -324,15 +324,12 @@ class Experiment(CallbackNotifier):
         self.total_frames = 0
         self.n_iters_performed = 0
         self.mean_return = 0
-        self.min_return = 0
-        self.max_return = 0
 
         if self.config.restore_file is not None:
             self._load_experiment()
         
-        self.mean_returns = []
-        self.min_returns = []
-        self.max_returns = []
+        self.episode_reward = None
+        self.reward = None
 
     @property
     def on_policy(self) -> bool:
@@ -543,8 +540,8 @@ class Experiment(CallbackNotifier):
                 eval=eval
             )
             if eval:
-                episode_reward = self.mean_return[1]
-                reward = self.mean_return[2]
+                self.episode_reward = self.mean_return[1]
+                self.reward = self.mean_return[2]
                 self.mean_return = self.mean_return[0]
             
             pbar.set_description(f"mean return = {self.mean_return}", refresh=False)
