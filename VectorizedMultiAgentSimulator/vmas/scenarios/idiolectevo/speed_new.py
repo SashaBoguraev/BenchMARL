@@ -8,7 +8,7 @@ class Scenario(BaseScenario):
         world = World(batch_dim=batch_dim, device=device, dim_c=10)
 
         n_agents = 2
-        n_landmarks = 6
+        n_landmarks = 3
 
         # Add agents
         for i in range(n_agents):
@@ -53,15 +53,6 @@ class Scenario(BaseScenario):
             )
             self.world.landmarks[2].color = torch.tensor(
                 [0, 1, 0], device=self.world.device, dtype=torch.float32
-            )
-            self.world.landmarks[3].color = torch.tensor(
-                [0, 1, 1], device=self.world.device, dtype=torch.float32
-            )
-            self.world.landmarks[4].color = torch.tensor(
-                [0, 0, 1], device=self.world.device, dtype=torch.float32
-            )
-            self.world.landmarks[5].color = torch.tensor(
-                [1, 0, 1], device=self.world.device, dtype=torch.float32
             )
             # special colors for goals
             self.world.agents[0].goal_a.color = self.world.agents[0].goal_b.color

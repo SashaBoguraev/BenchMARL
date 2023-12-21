@@ -64,7 +64,7 @@ def process_rewards(reward, episode_reward):
         return out
     
     # Return the speed for each row
-    speed_tensor = map(lambda row: find_last(row, threshold=.1), reward.clone().detach())
+    speed_tensor = map(lambda row: find_last(row, threshold=.25), reward.clone().detach())
     speed_tensor = torch.Tensor(list(speed_tensor))
 
 
