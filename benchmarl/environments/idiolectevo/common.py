@@ -16,7 +16,13 @@ from benchmarl.utils import DEVICE_TYPING
 
 class IdiolectEvoTask(Task):
     SPEED_OLD = None
+    SPEED_OLD_NOISE = None
+    SPEED_OLD_MEM_BUFFER = None
+    SPEED_OLD_NOISE_MEM = None
     SPEED_NEW = None
+    SPEED_NEW_NOISE = None
+    SPEED_NEW_MEM_BUFFER = None
+    SPEED_NEW_NOISE_MEM = None
 
     def get_env_fun(
         self,

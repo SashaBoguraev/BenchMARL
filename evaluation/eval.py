@@ -5,7 +5,7 @@ from benchmarl.models.mlp import MlpConfig
 import torch
 import numpy as np
 
-def run_benchmark(task):
+def run_benchmark(task, PATH):
     # Loads from "benchmarl/conf/experiment/base_experiment.yaml"
     experiment_config = ExperimentConfig.get_from_yaml()
 
@@ -16,7 +16,7 @@ def run_benchmark(task):
     experiment_config.max_n_frames = 10_000
     experiment_config.evaluation: False
     experiment_config.render: False
-    experiment_config.loggers = ["csv"]
+    experiment_config.loggers = []
 
     # Some basic other configs
     algorithm_config = MaddpgConfig.get_from_yaml()
@@ -33,7 +33,7 @@ def run_benchmark(task):
         critic_model_config = critic_model_config
     )
 
-    x = torch.load("/Users/sashaboguraev/Desktop/Cornell/College Scholar/BenchMARL/outputs/2023-11-20/FIrst Universal/maddpg_simple_reference_mlp__3141fed9_23_11_20-14_40_19/checkpoints/checkpoint_9900000.pt")
+    x = torch.load(PATH)
 
     policy = experiment.algorithm.get_policy_for_collection()
     policy.load_state_dict(x['collector']['policy_state_dict'])
@@ -83,5 +83,24 @@ def process_rewards(reward, episode_reward):
 
 
 if __name__ == "__main__":
-    outputs = run_benchmark(IdiolectEvoTask.SPEED_OLD.get_from_yaml())
-    print(outputs)
+    # Get checkpoint paths
+    universal_path = "evaluation/checkpoints/final/universal.pt"
+    noise_path = "evaluation/checkpoints/final/noise.pt"
+    mem_path = "evaluation/checkpoints/final/mem_buffer.pt"
+    noise_mem_path = "evaluation/checkpoints/final/noise_mem.pt"
+
+    # Get Stats for old environment
+    universal_old = run_benchmark(IdiolectEvoTask.SPEED_OLD.get_from_yaml(), universal_path)
+    noise_old = run_benchmark(IdiolectEvoTask.SPEED_OLD_NOISE.get_from_yaml(), noise_path)
+    mem_old = run_benchmark(IdiolectEvoTask.SPEED_OLD_MEM_BUFFER.get_from_yaml(), mem_path)
+    noise_mem_old = run_benchmark(IdiolectEvoTask.SPEED_OLD_NOISE_MEM.get_from_yaml(), noise_mem_path)
+
+    # Get Stats for new environment
+    universal_new = run_benchmark(IdiolectEvoTask.SPEED_NEW.get_from_yaml(), universal_path)
+    noise_new = run_benchmark(IdiolectEvoTask.SPEED_NEW_NOISE.get_from_yaml(), noise_path)
+    mem_new = run_benchmark(IdiolectEvoTask.SPEED_NEW_MEM_BUFFER.get_from_yaml(), mem_path)
+    noise_new = run_benchmark(IdiolectEvoTask.SPEED_NEW_NOISE_MEM.get_from_yaml(), noise_mem_path)
+
+    
+
+    

@@ -46,7 +46,13 @@ from .vmas.simple_reference_idiolect_const import TaskConfig as ConstSimpleRefId
 from .vmas.simple_reference_idiolect_mem_buffer_const import TaskConfig as ConstSimpleRefIdioMemConfig
 from .vmas.simple_reference_idiolect_noise_mem_const import TaskConfig as ConstSimpleRefIdioNoiseMemConfig
 from .idiolectevo.speed_old import TaskConfig as SpeedOldConfig
+from .idiolectevo.speed_old_noise import TaskConfig as SpeedOldNoiseConfig
+from .idiolectevo.speed_old_mem_buffer import TaskConfig as SpeedOldMemBufferConfig
+from .idiolectevo.speed_old_noise_mem import TaskConfig as SpeedOldNoiseMemConfig
 from .idiolectevo.speed_new import TaskConfig as SpeedNewConfig
+from .idiolectevo.speed_new_noise import TaskConfig as SpeedNewNoiseConfig
+from .idiolectevo.speed_new_mem_buffer import TaskConfig as SpeedNewMemBufferConfig
+from .idiolectevo.speed_new_noise_mem import TaskConfig as SpeedNewNoiseMemConfig
 
 # This is a registry mapping task config schemas names to their python dataclass
 # It is used by hydra to validate loaded configs.
@@ -77,5 +83,11 @@ _task_class_registry = {
     "pettingzoo_simple_tag_config": SimpleTagConfig,
     "pettingzoo_simple_world_comm_config": SimpleWorldComm,
     "idiolectevo_speed_old": SpeedOldConfig,
+    "idiolectevo_speed_old_noise": SpeedOldNoiseConfig,
+    "idiolectevo_speed_old_mem_buffer": SpeedOldMemBufferConfig,
+    "idiolectevo_speed_old_noise_mem": SpeedOldNoiseMemConfig,
     "idiolectevo_speed_new": SpeedNewConfig,
+    "idiolectevo_speed_new_noise": SpeedNewNoiseConfig,
+    "idiolectevo_speed_new_mem_buffer": SpeedNewMemBufferConfig,
+    "idiolectevo_speed_new_noise_mem": SpeedNewNoiseMemConfig,
 }
