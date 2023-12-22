@@ -47,14 +47,14 @@ class Scenario(BaseScenario):
                     [0.25, 0.25, 0.25], device=self.world.device, dtype=torch.float32
                 )
             # set colors for landmarks
-            self.world.landmarks[0].color = torch.tensor(
-                [1, 0, 0], device=self.world.device, dtype=torch.float32
+            self.world.landmarks[0].color = torch.rand(
+                3, device=self.world.device, dtype=torch.float32
             )
-            self.world.landmarks[1].color = torch.tensor(
-                [1, 1, 0], device=self.world.device, dtype=torch.float32
+            self.world.landmarks[1].color = torch.rand(
+                3, device=self.world.device, dtype=torch.float32
             )
-            self.world.landmarks[2].color = torch.tensor(
-                [0, 1, 0], device=self.world.device, dtype=torch.float32
+            self.world.landmarks[2].color = torch.rand(
+                3, device=self.world.device, dtype=torch.float32
             )
             # special colors for goals
             self.world.agents[0].goal_a.color = self.world.agents[0].goal_b.color
