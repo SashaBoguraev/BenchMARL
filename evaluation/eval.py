@@ -5,6 +5,7 @@ from benchmarl.models.mlp import MlpConfig
 import torch, itertools, csv, os
 import numpy as np
 from scipy.stats import ttest_ind
+import matplotlib.pyplot as plt
 
 def run_benchmark(task, PATH):
     # Loads from "benchmarl/conf/experiment/base_experiment.yaml"
@@ -44,9 +45,9 @@ def run_benchmark(task, PATH):
     reward = experiment.reward
     episode_reward = experiment.episode_reward
 
-    stats = process_rewards(reward, episode_reward)
+    stats, mean_stats, to_graphs = process_rewards(reward, episode_reward)
 
-    return stats
+    return stats, mean_stats, to_graphs
 
 def process_rewards(reward, episode_reward):
     # Get the individual rewards for each environment
@@ -64,9 +65,26 @@ def process_rewards(reward, episode_reward):
         return float('nan')
     
     # Return the speed for each row
-    speed_data = map(lambda row: find_speed(row, threshold=.5), reward.clone().detach())
+    speed_data = map(lambda row: find_speed(row, threshold=.2), reward.clone().detach())
     speed_tensor = torch.Tensor(list(speed_data))
-    speed_length = torch.sum(torch.isinf(speed_tensor)).item()
+    speed_length = torch.sum(torch.isnan(speed_tensor)).item()
+
+    thresholds = []
+    num_nans = []
+    speed_means = []
+
+    num_steps = 20
+
+    for step in np.linspace(0, 2, num_steps):
+        # thresh = thresh - i*inc
+        speed = map(lambda row: find_speed(row, threshold=step), reward.clone().detach())
+        speed = torch.Tensor(list(speed))
+        speed_mean = np.nanmean(speed)
+        num_nan = torch.sum(torch.isnan(speed)).item()
+
+        thresholds.append(step)
+        num_nans.append(num_nan)
+        speed_means.append(speed_mean)
 
     # Get Unique Episode Rewards
     episode_reward = episode_reward[::2]
@@ -80,7 +98,22 @@ def process_rewards(reward, episode_reward):
         "Speed Length": speed_length
     }
 
-    return stats
+    mean_stats = {
+        "Max Rewards": max_rewards.squeeze().mean().item(),
+        "Min Rewards": min_rewards.squeeze().mean().item(),
+        "Mean Rewards": mean_rewards.squeeze().mean().item(),
+        "Episode Rewards": episode_reward.mean().item(),
+        "Speeds": np.nanmean(speed_tensor),
+        "Num Nans": speed_length
+    }
+
+    to_graphs = {
+        "thresholds": thresholds,
+        "num nans": num_nans,
+        "speed means": speed_means
+    }
+
+    return stats, mean_stats, to_graphs
 
 def compare_environments(eval_one, eval_two, alt):
     keys = eval_one.keys()
@@ -90,18 +123,21 @@ def compare_environments(eval_one, eval_two, alt):
             data_one = eval_one[key].tolist()
             data_two = eval_two[key].tolist()
             stat, p = ttest_ind(data_one, data_two, alternative=alt, nan_policy='omit')
-            p_vals.append(p)
-    
+            p_vals.append(p)    
     return p_vals
 
-def write_csv(filename, data):
+def write_csv(filename, data, arrays=True):
     with open(filename, 'w+', newline='') as csvfile:
         fieldnames = list(data.keys())
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
         writer.writeheader()
-        for i in range(len(data[fieldnames[0]])):
-            row_data = {field: data[field][i] for field in fieldnames}
+        if arrays:
+            for i in range(len(data[fieldnames[0]])):
+                row_data = {field: data[field][i] for field in fieldnames}
+                writer.writerow(row_data)
+        else:
+            row_data = {field: data[field] for field in fieldnames}
             writer.writerow(row_data)
 
 def eval_pairs(pairs, out_dict):
@@ -113,6 +149,32 @@ def eval_pairs(pairs, out_dict):
         out_dict["less"].append(p_less)
         out_dict["greater"].append(p_greater)
 
+def graph_data(datasets, titles, type):
+
+    title = type+" Environments"
+    threshold = datasets[0]["thresholds"]
+
+    fig, axs = plt.subplots(2, figsize=(15, 15))
+    axs[0].set_title('Speed')
+    axs[0].set(xlabel='Threshold', ylabel='Speed')
+    axs[1].set_title('Number of Incompletions')
+    axs[1].set(xlabel='Threshold', ylabel='Number of Incompletions')
+
+    for idx, data in enumerate(datasets):
+        nan = data["num nans"]
+        speed = data["speed means"]
+
+        label = titles[idx]
+
+        axs[0].plot(threshold, speed, label=label)
+        axs[1].plot(threshold, nan, label=label)
+    
+    axs[0].legend()
+    axs[1].legend()
+
+    save_path = type+'_graph.png'
+    plt.savefig(save_path)
+
 if __name__ == "__main__":
     # Get checkpoint paths
     universal_path = "evaluation/checkpoints/final/universal.pt"
@@ -121,20 +183,24 @@ if __name__ == "__main__":
     noise_mem_path = "evaluation/checkpoints/final/noise_mem.pt"
 
     # Get Stats for old environment
-    universal_old = run_benchmark(IdiolectEvoTask.SPEED_OLD.get_from_yaml(), universal_path)
-    noise_old = run_benchmark(IdiolectEvoTask.SPEED_OLD_NOISE.get_from_yaml(), noise_path)
-    mem_old = run_benchmark(IdiolectEvoTask.SPEED_OLD_MEM_BUFFER.get_from_yaml(), mem_path)
-    noise_mem_old = run_benchmark(IdiolectEvoTask.SPEED_OLD_NOISE_MEM.get_from_yaml(), noise_mem_path)
+    universal_old, universal_old_means, universal_old_graphs = run_benchmark(IdiolectEvoTask.SPEED_OLD.get_from_yaml(), universal_path)
+    noise_old, noise_old_means, noise_old_graphs = run_benchmark(IdiolectEvoTask.SPEED_OLD_NOISE.get_from_yaml(), noise_path)
+    mem_old, mem_old_means, mem_old_graphs = run_benchmark(IdiolectEvoTask.SPEED_OLD_MEM_BUFFER.get_from_yaml(), mem_path)
+    noise_mem_old, noise_mem_old_means, noise_mem_old_graphs = run_benchmark(IdiolectEvoTask.SPEED_OLD_NOISE_MEM.get_from_yaml(), noise_mem_path)
     old_evals = [universal_old, noise_old, mem_old, noise_mem_old]
     old_pairs = list(itertools.combinations(old_evals, 2))
+    old_graphs = [universal_old_graphs, noise_old_graphs, mem_old_graphs, noise_mem_old_graphs]
 
     # Get Stats for new environment
-    universal_new = run_benchmark(IdiolectEvoTask.SPEED_NEW.get_from_yaml(), universal_path)
-    noise_new = run_benchmark(IdiolectEvoTask.SPEED_NEW_NOISE.get_from_yaml(), noise_path)
-    mem_new = run_benchmark(IdiolectEvoTask.SPEED_NEW_MEM_BUFFER.get_from_yaml(), mem_path)
-    noise_new = run_benchmark(IdiolectEvoTask.SPEED_NEW_NOISE_MEM.get_from_yaml(), noise_mem_path)
-    new_evals = [universal_new, noise_new, mem_new, noise_new]
+    universal_new, universal_new_means, universal_new_graphs = run_benchmark(IdiolectEvoTask.SPEED_NEW.get_from_yaml(), universal_path)
+    noise_new, noise_new_means, noise_new_graphs = run_benchmark(IdiolectEvoTask.SPEED_NEW_NOISE.get_from_yaml(), noise_path)
+    mem_new, mem_new_means, mem_new_graphs = run_benchmark(IdiolectEvoTask.SPEED_NEW_MEM_BUFFER.get_from_yaml(), mem_path)
+    noise_mem_new, noise_mem_new_means, noise_mem_new_graphs = run_benchmark(IdiolectEvoTask.SPEED_NEW_NOISE_MEM.get_from_yaml(), noise_mem_path)
+    new_evals = [universal_new, noise_new, mem_new, noise_mem_new]
     new_pairs = list(itertools.combinations(new_evals, 2))
+    new_graphs = [universal_new_graphs, noise_new_graphs, mem_new_graphs, noise_mem_new_graphs]
+
+    titles = ["Universal", "Noise", "Attention-Based Memory", "Both"]
 
     # Get names for all possible pairs
     pairs = [
@@ -158,9 +224,31 @@ if __name__ == "__main__":
         "greater": []
     }
 
+    # Populate P-Value Dictionaries
     eval_pairs(old_pairs, p_vals_old)
     eval_pairs(new_pairs, p_vals_new)
+
+    # Initialize the dictionaries for all means
+    means_old = {
+        "universal": universal_old_means,
+        "noise": noise_old_means,
+        "attention": mem_old_means,
+        "both": noise_mem_old_means
+    }
+    means_new = {
+        "universal": universal_new_means,
+        "noise": noise_new_means,
+        "attention": mem_new_means,
+        "both": noise_mem_new_means
+    }
     
-    output_folder = '/Users/sashaboguraev/Desktop/Cornell/College Scholar/BenchMARL/evaluation/p_vals'
+    # Write results to files
+    output_folder = '/Users/sashaboguraev/Desktop/Cornell/College Scholar/BenchMARL/evaluation/stats'
     write_csv(os.path.join(output_folder, 'p_vals_old.csv'), p_vals_old)
     write_csv(os.path.join(output_folder, 'p_vals_new.csv'), p_vals_new)
+    write_csv(os.path.join(output_folder, 'means_old.csv'), means_old, False)
+    write_csv(os.path.join(output_folder, 'means_new.csv'), means_new, False)
+
+    # Graph Data
+    graph_data(old_graphs, titles, "Old")
+    graph_data(new_graphs, titles, "Novel")
