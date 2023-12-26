@@ -156,9 +156,9 @@ def graph_data(datasets, titles, type):
 
     fig, axs = plt.subplots(2, figsize=(15, 15))
     axs[0].set_title('Speed')
-    axs[0].set(xlabel='Threshold', ylabel='Speed')
+    axs[0].set(xlabel='Negative Threshold', ylabel='Speed')
     axs[1].set_title('Number of Incompletions')
-    axs[1].set(xlabel='Threshold', ylabel='Number of Incompletions')
+    axs[1].set(xlabel='Negative Threshold', ylabel='Number of Incompletions')
 
     for idx, data in enumerate(datasets):
         nan = data["num nans"]
