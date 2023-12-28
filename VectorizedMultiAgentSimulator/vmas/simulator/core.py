@@ -2215,7 +2215,8 @@ class World(TorchVectorizedObject):
         for other in self.agents:
             if other is agent:
                 continue
-            comm.append(other.state.c)
+            loc_noise = agent.noise.sample(sample_shape=torch.Size(agent.action.c.shape)).squeeze(dim = 2) if agent.noise != None else 0.0
+            comm.append(other.state.c + loc_noise)
         return torch.cat(
             [
                 agent.state.vel,
