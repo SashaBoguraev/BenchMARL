@@ -63,7 +63,7 @@ class Scenario(BaseScenario):
 
             # Make everything for memory store
             for agent in self.world.agents:
-                agent.memory = torch.zeros((self.world.batch_dim, 21, 500))
+                agent.memory = torch.zeros((self.world.batch_dim, 21, 1000))
 
         # set random initial states
         for agent in self.world.agents:
