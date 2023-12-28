@@ -175,27 +175,27 @@ def graph_data(datasets, titles, type):
     save_path = type+'_graph.png'
     plt.savefig(save_path)
 
-if __name__ == "__main__":
-    # Get checkpoint paths
-    universal_path = "evaluation/checkpoints/final/universal.pt"
-    noise_path = "evaluation/checkpoints/final/noise.pt"
-    mem_path = "evaluation/checkpoints/final/mem_buffer.pt"
-    noise_mem_path = "evaluation/checkpoints/final/noise_mem.pt"
+def generate_data(paths, seed):
+    # Get Paths
+    universal_path = paths[0]
+    noise_path = paths[1]
+    mem_path = paths[2]
+    noise_mem_path = paths[3]
 
     # Get Stats for old environment
-    universal_old, universal_old_means, universal_old_graphs = run_benchmark(IdiolectEvoTask.SPEED_OLD.get_from_yaml(), universal_path)
-    noise_old, noise_old_means, noise_old_graphs = run_benchmark(IdiolectEvoTask.SPEED_OLD_NOISE.get_from_yaml(), noise_path)
-    mem_old, mem_old_means, mem_old_graphs = run_benchmark(IdiolectEvoTask.SPEED_OLD_MEM_BUFFER.get_from_yaml(), mem_path)
-    noise_mem_old, noise_mem_old_means, noise_mem_old_graphs = run_benchmark(IdiolectEvoTask.SPEED_OLD_NOISE_MEM.get_from_yaml(), noise_mem_path)
+    universal_old, universal_old_means, universal_old_graphs = run_benchmark(IdiolectEvoTask.SPEED_OLD.get_from_yaml(), universal_path, seed)
+    noise_old, noise_old_means, noise_old_graphs = run_benchmark(IdiolectEvoTask.SPEED_OLD_NOISE.get_from_yaml(), noise_path, seed)
+    mem_old, mem_old_means, mem_old_graphs = run_benchmark(IdiolectEvoTask.SPEED_OLD_MEM_BUFFER.get_from_yaml(), mem_path, seed)
+    noise_mem_old, noise_mem_old_means, noise_mem_old_graphs = run_benchmark(IdiolectEvoTask.SPEED_OLD_NOISE_MEM.get_from_yaml(), noise_mem_path, seed)
     old_evals = [universal_old, noise_old, mem_old, noise_mem_old]
     old_pairs = list(itertools.combinations(old_evals, 2))
     old_graphs = [universal_old_graphs, noise_old_graphs, mem_old_graphs, noise_mem_old_graphs]
 
     # Get Stats for new environment
-    universal_new, universal_new_means, universal_new_graphs = run_benchmark(IdiolectEvoTask.SPEED_NEW.get_from_yaml(), universal_path)
-    noise_new, noise_new_means, noise_new_graphs = run_benchmark(IdiolectEvoTask.SPEED_NEW_NOISE.get_from_yaml(), noise_path)
-    mem_new, mem_new_means, mem_new_graphs = run_benchmark(IdiolectEvoTask.SPEED_NEW_MEM_BUFFER.get_from_yaml(), mem_path)
-    noise_mem_new, noise_mem_new_means, noise_mem_new_graphs = run_benchmark(IdiolectEvoTask.SPEED_NEW_NOISE_MEM.get_from_yaml(), noise_mem_path)
+    universal_new, universal_new_means, universal_new_graphs = run_benchmark(IdiolectEvoTask.SPEED_NEW.get_from_yaml(), universal_path, seed)
+    noise_new, noise_new_means, noise_new_graphs = run_benchmark(IdiolectEvoTask.SPEED_NEW_NOISE.get_from_yaml(), noise_path, seed)
+    mem_new, mem_new_means, mem_new_graphs = run_benchmark(IdiolectEvoTask.SPEED_NEW_MEM_BUFFER.get_from_yaml(), mem_path, seed)
+    noise_mem_new, noise_mem_new_means, noise_mem_new_graphs = run_benchmark(IdiolectEvoTask.SPEED_NEW_NOISE_MEM.get_from_yaml(), noise_mem_path, seed)
     new_evals = [universal_new, noise_new, mem_new, noise_mem_new]
     new_pairs = list(itertools.combinations(new_evals, 2))
     new_graphs = [universal_new_graphs, noise_new_graphs, mem_new_graphs, noise_mem_new_graphs]
@@ -244,11 +244,34 @@ if __name__ == "__main__":
     
     # Write results to files
     output_folder = '/Users/sashaboguraev/Desktop/Cornell/College Scholar/BenchMARL/evaluation/stats'
-    write_csv(os.path.join(output_folder, 'p_vals_old.csv'), p_vals_old)
-    write_csv(os.path.join(output_folder, 'p_vals_new.csv'), p_vals_new)
-    write_csv(os.path.join(output_folder, 'means_old.csv'), means_old, False)
-    write_csv(os.path.join(output_folder, 'means_new.csv'), means_new, False)
+    write_csv(os.path.join(output_folder, 'p_vals_old_seed'+str(seed)+'.csv'), p_vals_old)
+    write_csv(os.path.join(output_folder, 'p_vals_new'+str(seed)+'.csv'), p_vals_new)
+    write_csv(os.path.join(output_folder, 'means_old'+str(seed)+'.csv'), means_old, False)
+    write_csv(os.path.join(output_folder, 'means_new'+str(seed)+'.csv'), means_new, False)
 
     # Graph Data
-    graph_data(old_graphs, titles, "Old")
-    graph_data(new_graphs, titles, "Novel")
+    graph_data(old_graphs, titles, "Old_seed"+str(seed))
+    graph_data(new_graphs, titles, "Novel_seed"+str(seed))
+
+if __name__ == "__main__":
+
+    # Checkpoint paths
+    universal_path_final = "evaluation/checkpoints/final/universal.pt"
+    noise_path_final = "evaluation/checkpoints/final/noise.pt"
+    mem_path_final = "evaluation/checkpoints/final/mem_buffer.pt"
+    noise_mem_path_final = "evaluation/checkpoints/final/noise_mem.pt"
+    final_paths = [universal_path_final, noise_path_final, mem_path_final, noise_mem_path_final]
+
+    universal_path_sim = "evaluation/checkpoints/sim_reward/universal_42_38.pt"
+    noise_path_sim = "evaluation/checkpoints/sim_reward/noise_41_725.pt"
+    mem_path_sim = "evaluation/checkpoints/sim_reward/mem_buffer_41_841.pt"
+    noise_mem_path_sim = "evaluation/checkpoints/sim_reward/both_41_725.pt"
+    sim_paths = [universal_path_sim, noise_path_sim, mem_path_sim, noise_mem_path_sim]
+
+    # Seed
+    seeds = 0
+
+    # Generate Everything
+    for seed in range(seeds):
+        print("SEED ", seed)
+        generate_data(sim_paths, seed)
