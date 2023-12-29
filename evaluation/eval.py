@@ -7,7 +7,7 @@ import numpy as np
 from scipy.stats import ttest_ind
 import matplotlib.pyplot as plt
 
-def run_benchmark(task, PATH):
+def run_benchmark(task, PATH, seed):
     # Loads from "benchmarl/conf/experiment/base_experiment.yaml"
     experiment_config = ExperimentConfig.get_from_yaml()
 
@@ -25,7 +25,6 @@ def run_benchmark(task, PATH):
     algorithm_config = MaddpgConfig.get_from_yaml()
     model_config = MlpConfig.get_from_yaml()
     critic_model_config = MlpConfig.get_from_yaml()
-    seed = 0
 
     experiment = Experiment(
         algorithm_config = algorithm_config,
@@ -263,15 +262,17 @@ if __name__ == "__main__":
     final_paths = [universal_path_final, noise_path_final, mem_path_final, noise_mem_path_final]
 
     universal_path_sim = "evaluation/checkpoints/sim_reward/universal_42_38.pt"
-    noise_path_sim = "evaluation/checkpoints/sim_reward/noise_41_725.pt"
+    # noise_path_sim = "evaluation/checkpoints/sim_reward/noise_41_725.pt"
+    noise_path_sim = "outputs/2023-12-27/21-35-30/maddpg_simple_reference_idiolect_mlp__6353b4cc_23_12_27-21_35_31/checkpoints/checkpoint_7500000.pt"
     mem_path_sim = "evaluation/checkpoints/sim_reward/mem_buffer_41_841.pt"
     noise_mem_path_sim = "evaluation/checkpoints/sim_reward/both_41_725.pt"
     sim_paths = [universal_path_sim, noise_path_sim, mem_path_sim, noise_mem_path_sim]
 
     # Seed
-    seeds = 0
+    seeds = 10
 
     # Generate Everything
     for seed in range(seeds):
         print("SEED ", seed)
+        seed = seed + 10
         generate_data(sim_paths, seed)
