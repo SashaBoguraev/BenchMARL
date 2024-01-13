@@ -19,6 +19,8 @@ class IdiolectEvoTask(Task):
     SPEED_OLD_NOISE = None
     SPEED_OLD_MEM_BUFFER = None
     SPEED_OLD_NOISE_MEM = None
+    SPEED_OLD_CONST = None
+    SPEED_OLD_NOISE_CONST = None
     SPEED_NEW = None
     SPEED_NEW_NOISE = None
     SPEED_NEW_MEM_BUFFER = None

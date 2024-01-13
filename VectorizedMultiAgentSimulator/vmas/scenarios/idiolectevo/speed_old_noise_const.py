@@ -1,7 +1,9 @@
+#  Adapted from work by ProrokLab (https://www.proroklab.org/)
+
 import torch
 
-from VectorizedMultiAgentSimulator.vmas.simulator.core import World, Agent, Landmark
-from VectorizedMultiAgentSimulator.vmas.simulator.scenario import BaseScenario
+from vmas.simulator.core import World, Agent, Landmark
+from vmas.simulator.scenario import BaseScenario
 
 class Scenario(BaseScenario):
     def make_world(self, batch_dim: int, device: torch.device, **kwargs):
@@ -44,19 +46,23 @@ class Scenario(BaseScenario):
                 agent.color = torch.tensor(
                     [0.25, 0.25, 0.25], device=self.world.device, dtype=torch.float32
                 )
-            # set colors for landmarks
+            # random properties for landmarks
             self.world.landmarks[0].color = torch.tensor(
-                    [1.0, 0.0, 0.0], device=self.world.device, dtype=torch.float32
+                [0.75, 0.25, 0.25], device=self.world.device, dtype=torch.float32
             )
             self.world.landmarks[1].color = torch.tensor(
-                    [0.0, 1.0, 0.0], device=self.world.device, dtype=torch.float32
+                [0.25, 0.75, 0.25], device=self.world.device, dtype=torch.float32
             )
             self.world.landmarks[2].color = torch.tensor(
-                    [0.0, 0.0, 1.0], device=self.world.device, dtype=torch.float32
+                [0.25, 0.25, 0.75], device=self.world.device, dtype=torch.float32
             )
             # special colors for goals
             self.world.agents[0].goal_a.color = self.world.agents[0].goal_b.color
             self.world.agents[1].goal_a.color = self.world.agents[1].goal_b.color
+
+            # Make everything for noise (need to make this not hard-coded)
+            for agent in self.world.agents:
+                agent.noise = torch.distributions.Beta(torch.rand(1), torch.rand(1))
 
         # set random initial states
         for agent in self.world.agents:
@@ -73,20 +79,28 @@ class Scenario(BaseScenario):
                 ),
                 batch_index=env_index,
             )
-        for landmark in self.world.landmarks:
-            landmark.set_pos(
-                torch.zeros(
-                    (1, self.world.dim_p)
-                    if env_index is not None
-                    else (self.world.batch_dim, self.world.dim_p),
-                    device=self.world.device,
-                    dtype=torch.float32,
-                ).uniform_(
-                    -1.0,
-                    1.0,
-                ),
-                batch_index=env_index,
-            )
+        for idx, landmark in enumerate(self.world.landmarks):
+            if idx == 0:
+                landmark.set_pos(
+                    torch.Tensor(
+                        [-0.3065, -0.7480],
+                    ).repeat(self.world.batch_dim, 1),
+                    batch_index=env_index,
+                )
+            elif idx == 1: 
+                landmark.set_pos(
+                    torch.Tensor(
+                        [-0.2694, -0.6261]
+                    ).repeat(self.world.batch_dim, 1),
+                    batch_index=env_index,
+                )
+            elif idx == 2: 
+                landmark.set_pos(
+                    torch.Tensor(
+                        [ 0.8436, -0.0874]
+                    ).repeat(self.world.batch_dim, 1),
+                    batch_index=env_index,
+                )
 
     def reward(self, agent: Agent):
         is_first = agent == self.world.agents[0]
