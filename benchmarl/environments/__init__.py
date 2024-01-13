@@ -53,6 +53,8 @@ from .idiolectevo.speed_new import TaskConfig as SpeedNewConfig
 from .idiolectevo.speed_new_noise import TaskConfig as SpeedNewNoiseConfig
 from .idiolectevo.speed_new_mem_buffer import TaskConfig as SpeedNewMemBufferConfig
 from .idiolectevo.speed_new_noise_mem import TaskConfig as SpeedNewNoiseMemConfig
+from .idiolectevo.speed_old_const import TaskConfig as SpeedOldConstConfig
+from .idiolectevo.speed_old_noise_const import TaskConfig as SpeedOldNoiseConstConfig
 
 # This is a registry mapping task config schemas names to their python dataclass
 # It is used by hydra to validate loaded configs.
@@ -90,4 +92,6 @@ _task_class_registry = {
     "idiolectevo_speed_new_noise": SpeedNewNoiseConfig,
     "idiolectevo_speed_new_mem_buffer": SpeedNewMemBufferConfig,
     "idiolectevo_speed_new_noise_mem": SpeedNewNoiseMemConfig,
+    "idiolectevo_speed_old_const": SpeedOldConstConfig,
+    "idiolectevo_speed_old_noise_const": SpeedOldNoiseConstConfig,
 }

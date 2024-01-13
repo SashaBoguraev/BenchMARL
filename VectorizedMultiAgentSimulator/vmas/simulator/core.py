@@ -2215,7 +2215,8 @@ class World(TorchVectorizedObject):
         for other in self.agents:
             if other is agent:
                 continue
-            comm.append(other.state.c)
+            loc_noise = agent.noise.sample(sample_shape=torch.Size(agent.action.c.shape)).squeeze(dim = 2) if agent.noise != None else 0.0
+            comm.append(other.state.c + loc_noise/2)
         return torch.cat(
             [
                 agent.state.vel,
@@ -2241,7 +2242,7 @@ class World(TorchVectorizedObject):
                 loc_noise = agent.noise.sample(sample_shape=torch.Size(agent.action.c.shape)).squeeze(dim = 2)
             else:
                 loc_noise = 0.0
-            agent.state.c = agent.action.c + noise + loc_noise
+            agent.state.c = agent.action.c + noise + loc_noise/2
 
     @override(TorchVectorizedObject)
     def to(self, device: torch.device):

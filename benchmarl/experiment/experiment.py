@@ -763,6 +763,13 @@ class Experiment(CallbackNotifier):
         self.n_iters_performed = state_dict["state"]["n_iters_performed"]
         self.mean_return = state_dict["state"]["mean_return"]
 
+    def load_policy_only(self, state_dict: Dict) -> None:
+        """Load the state_dict for the experiment"""
+        for group in self.group_map.keys():
+            self.losses[group].load_state_dict(state_dict[f"loss_{group}"])
+            self.replay_buffers[group].load_state_dict(state_dict[f"buffer_{group}"])
+        self.collector.load_state_dict(state_dict["collector"])
+
     def _save_experiment(self) -> None:
         """Checkpoint trainer"""
         checkpoint_folder = self.folder_name / "checkpoints"
@@ -774,4 +781,13 @@ class Experiment(CallbackNotifier):
         """Load trainer from checkpoint"""
         loaded_dict: OrderedDict = torch.load(self.config.restore_file)
         self.load_state_dict(loaded_dict)
+        return self
+
+    def load_experiment_policy(self, restore_file) -> Experiment:
+        """Load trainer from checkpoint"""
+        loaded_dict: OrderedDict = torch.load(restore_file)
+        loaded_dict["collector"]["frames"] = 0
+        loaded_dict["collector"]["iter"] = 0
+        del loaded_dict["collector"]["env_state_dict"]
+        self.load_policy_only(loaded_dict)
         return self
