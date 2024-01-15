@@ -771,7 +771,8 @@ class Agent(Entity):
         collision_filter: Callable[[Entity], bool] = lambda _: True,
         render_action: bool = False,
         noise = None,
-        memory = None
+        memory = None,
+        ref_frame = None
     ):
         super().__init__(
             name,
@@ -835,6 +836,8 @@ class Agent(Entity):
 
         self.noise = noise
         self.memory = memory
+
+        self.ref_frame = ref_frame
 
     def add_sensor(self, sensor: Sensor):
         sensor.agent = self

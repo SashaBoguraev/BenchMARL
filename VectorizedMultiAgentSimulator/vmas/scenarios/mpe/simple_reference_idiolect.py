@@ -65,7 +65,7 @@ class Scenario(BaseScenario):
                 agent.noise = torch.distributions.Beta(torch.rand(1), torch.rand(1))
 
         # set random initial states
-        for agent in self.world.agents:
+        for idx, agent in enumerate(self.world.agents):
             agent.set_pos(
                 torch.zeros(
                     (1, self.world.dim_p)
@@ -79,6 +79,13 @@ class Scenario(BaseScenario):
                 ),
                 batch_index=env_index,
             )
+            if idx==0:
+                agent.ref_frame = torch.Tensor([[0.4973, 0.3819],[0.0203, 0.8856]]).unsqueeze(0).repeat(self.world.batch_dim, 1, 1)
+            elif idx==1: 
+                agent.ref_frame = torch.Tensor([[0.7729, 0.8743],[0.1327, 0.7566]]).unsqueeze(0).repeat(self.world.batch_dim, 1, 1)
+            else:
+                print("NO REFERENCE FRAME FOR "+self.name+" AS THERE ARE MORE THAN TWO AGENTS")
+            
         for landmark in self.world.landmarks:
             landmark.set_pos(
                 torch.zeros(
@@ -119,7 +126,12 @@ class Scenario(BaseScenario):
         # get positions of all entities in this agent's reference frame
         entity_pos = []
         for entity in self.world.landmarks:
-            entity_pos.append(entity.state.pos - agent.state.pos)
+            entity_pos.append(
+                torch.bmm(
+                    agent.ref_frame,
+                    (entity.state.pos - agent.state.pos).unsqueeze(2)
+                ).squeeze(2)
+            )
 
         # communication of all other agents
         comm = []

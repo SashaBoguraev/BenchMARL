@@ -1,5 +1,5 @@
 from benchmarl.algorithms import MaddpgConfig
-from benchmarl.environments import IdiolectEvoTask
+from benchmarl.environments import IdiolectEvoTask, VmasTask
 from benchmarl.experiment import Experiment, ExperimentConfig
 from benchmarl.models.mlp import MlpConfig
 import torch, itertools, csv, os
@@ -20,6 +20,7 @@ def run_benchmark(task, PATH, seed):
     experiment_config.render = False
     experiment_config.loggers = []
     experiment_config.checkpoint_interval = 100_000_000
+    experiment_config.share_policy_params = False
 
     # Some basic other configs
     algorithm_config = MaddpgConfig.get_from_yaml()
@@ -36,10 +37,7 @@ def run_benchmark(task, PATH, seed):
     )
 
     x = torch.load(PATH)
-
-    policy = experiment.algorithm.get_policy_for_collection()
-    policy.load_state_dict(x['collector']['policy_state_dict'])
-    experiment.policy = policy
+    experiment = experiment.load_experiment_policy(x)
     experiment.run(eval = True)
     reward = experiment.reward
     episode_reward = experiment.episode_reward
@@ -178,37 +176,26 @@ def generate_data(paths, seed):
     # Get Paths
     universal_path = paths[0]
     noise_path = paths[1]
-    mem_path = paths[2]
-    noise_mem_path = paths[3]
 
     # Get Stats for old environment
     universal_old, universal_old_means, universal_old_graphs = run_benchmark(IdiolectEvoTask.SPEED_OLD.get_from_yaml(), universal_path, seed)
     noise_old, noise_old_means, noise_old_graphs = run_benchmark(IdiolectEvoTask.SPEED_OLD_NOISE.get_from_yaml(), noise_path, seed)
-    mem_old, mem_old_means, mem_old_graphs = run_benchmark(IdiolectEvoTask.SPEED_OLD_MEM_BUFFER.get_from_yaml(), mem_path, seed)
-    noise_mem_old, noise_mem_old_means, noise_mem_old_graphs = run_benchmark(IdiolectEvoTask.SPEED_OLD_NOISE_MEM.get_from_yaml(), noise_mem_path, seed)
-    old_evals = [universal_old, noise_old, mem_old, noise_mem_old]
+    old_evals = [universal_old, noise_old]
     old_pairs = list(itertools.combinations(old_evals, 2))
-    old_graphs = [universal_old_graphs, noise_old_graphs, mem_old_graphs, noise_mem_old_graphs]
+    old_graphs = [universal_old_graphs, noise_old_graphs]
 
     # Get Stats for new environment
     universal_new, universal_new_means, universal_new_graphs = run_benchmark(IdiolectEvoTask.SPEED_NEW.get_from_yaml(), universal_path, seed)
     noise_new, noise_new_means, noise_new_graphs = run_benchmark(IdiolectEvoTask.SPEED_NEW_NOISE.get_from_yaml(), noise_path, seed)
-    mem_new, mem_new_means, mem_new_graphs = run_benchmark(IdiolectEvoTask.SPEED_NEW_MEM_BUFFER.get_from_yaml(), mem_path, seed)
-    noise_mem_new, noise_mem_new_means, noise_mem_new_graphs = run_benchmark(IdiolectEvoTask.SPEED_NEW_NOISE_MEM.get_from_yaml(), noise_mem_path, seed)
-    new_evals = [universal_new, noise_new, mem_new, noise_mem_new]
+    new_evals = [universal_new, noise_new]
     new_pairs = list(itertools.combinations(new_evals, 2))
-    new_graphs = [universal_new_graphs, noise_new_graphs, mem_new_graphs, noise_mem_new_graphs]
+    new_graphs = [universal_new_graphs, noise_new_graphs]
 
-    titles = ["Universal", "Noise", "Attention-Based Memory", "Both"]
+    titles = ["Universal", "Noise"]
 
     # Get names for all possible pairs
     pairs = [
         "universal - noise",
-        "universal - mem",
-        "universal - noise_mem",
-        "noise - mem",
-        "noise - noise_mem",
-        "mem - noise_mem",
     ]
 
     # Initialize the dictionaries for all p-values
@@ -231,14 +218,10 @@ def generate_data(paths, seed):
     means_old = {
         "universal": universal_old_means,
         "noise": noise_old_means,
-        "attention": mem_old_means,
-        "both": noise_mem_old_means
     }
     means_new = {
         "universal": universal_new_means,
         "noise": noise_new_means,
-        "attention": mem_new_means,
-        "both": noise_mem_new_means
     }
     
     # Write results to files
@@ -255,18 +238,9 @@ def generate_data(paths, seed):
 if __name__ == "__main__":
 
     # Checkpoint paths
-    universal_path_final = "evaluation/checkpoints/final/universal.pt"
-    noise_path_final = "evaluation/checkpoints/final/noise.pt"
-    mem_path_final = "evaluation/checkpoints/final/mem_buffer.pt"
-    noise_mem_path_final = "evaluation/checkpoints/final/noise_mem.pt"
-    final_paths = [universal_path_final, noise_path_final, mem_path_final, noise_mem_path_final]
-
-    universal_path_sim = "evaluation/checkpoints/sim_reward/universal_42_38.pt"
-    # universal_path_sim = "adaptation_universal/checkpoints/checkpoint_9900000.pt"
-    noise_path_sim = "evaluation/checkpoints/sim_reward/noise_41_725.pt"
-    mem_path_sim = "evaluation/checkpoints/sim_reward/mem_buffer_41_841.pt"
-    noise_mem_path_sim = "evaluation/checkpoints/sim_reward/both_41_725.pt"
-    sim_paths = [universal_path_sim, noise_path_sim, mem_path_sim, noise_mem_path_sim]
+    noise_path = "outputs/2024-01-13/10-16-06/maddpg_simple_reference_idiolect_mlp__730ca284_24_01_13-10_16_06/checkpoints/checkpoint_7500000.pt"
+    universal_path = "outputs/2024-01-12/19-24-21/maddpg_simple_reference_mlp__60890225_24_01_12-19_24_21/checkpoints/checkpoint_7500000.pt"
+    sim_paths = [universal_path, noise_path]
 
     # Seed
     seeds = 10
