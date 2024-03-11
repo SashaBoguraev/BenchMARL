@@ -388,6 +388,7 @@ def plot_heatmap(paths, task, seeds, shared, checkpoints, save_path, scenario):
     heat = np.zeros((len(checkpoints)*3, len(checkpoints)*3))
     
     paths = [path+"checkpoint_"+str(checkpoint)+".pt" for path in paths for checkpoint in checkpoints]
+    labels = [str(checkpoint) for checkpoint in checkpoints]+[str(checkpoint) for checkpoint in checkpoints]+[str(checkpoint) for checkpoint in checkpoints]
 
     for idx_x, path_x in enumerate(paths):
         for idx_y, path_y in enumerate(paths):
@@ -398,17 +399,18 @@ def plot_heatmap(paths, task, seeds, shared, checkpoints, save_path, scenario):
             heat[idx_x][idx_y] = np.mean(rewards)
 
     # Plot Heatmap
-    ax = sns.heatmap(heat, linewidth=0.5)
-    plt.savefig(save_path+scenario+"_heatmap.png")
+    ax = sns.heatmap(heat, linewidth=0.5, xticklabels=labels, yticklabels=labels)
+    plt.tick_params(axis='both', which='major', length=2, bottom=False, top=True, labelbottom=False, labeltop=True)
+    plt.xlabel("Agent 1")
+    plt.ylabel("Agent 0")
+    plt.tight_layout()
+    plt.savefig(save_path+scenario+"_heatmap.png", dpi=500)
     plt.close()
 
     # Save vals
     write_csv(save_path+scenario, heatmap_array=heat)
 
 def write_csv(save_path, heatmap_array):
-    if not os.path.isdir(save_path):
-        os.makedirs(save_path)
-
     # Open the file with the append state
     with open(save_path+'_vals.csv', mode='w+') as file:
         writer = csv.writer(file)
@@ -459,7 +461,7 @@ if __name__ == "__main__":
 
         checkpoints = range(5100000, 5700000, 300000)
         
-        plot_heatmap(shared_noiseless_paths, task=VmasTask.SIMPLE_REFERENCE.get_from_yaml(), shared=True, seeds=seeds, checkpoints=checkpoints, save_path=save_path, scenario="shared_noiseless")
+        plot_heatmap(shared_noiseless_paths, task=VmasTask.SIMPLE_REFERENCE.get_from_yaml(), shared=True, seeds=seeds, checkpoints=checkpoints, save_path=save_path+"heatmaps/", scenario="shared_noiseless")
 
     elif not log_comms:
         # Paths
