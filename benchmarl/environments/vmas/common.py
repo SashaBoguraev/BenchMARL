@@ -28,6 +28,8 @@ class VmasTask(Task):
     SIMPLE_REFERENCE_IDIOLECT_MEM_BUFFER_CONST = None
     SIMPLE_REFERENCE_IDIOLECT_CONST = None
     SIMPLE_REFERENCE_CONST = None
+    SIMPLE_REFERENCE_LOG = None
+    SIMPLE_REFERENCE_IDIOLECT_LOG = None
 
     def get_env_fun(
         self,

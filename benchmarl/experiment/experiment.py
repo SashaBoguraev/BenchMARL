@@ -540,7 +540,8 @@ class Experiment(CallbackNotifier):
                 eval=eval
             )
             if eval:
-                self.episode_reward = self.mean_return[1]
+                out_rewards = torch.sum(self.mean_return[2], dim=1)[:, 0]
+                self.episode_reward = out_rewards
                 self.reward = self.mean_return[2]
                 self.mean_return = self.mean_return[0]
             

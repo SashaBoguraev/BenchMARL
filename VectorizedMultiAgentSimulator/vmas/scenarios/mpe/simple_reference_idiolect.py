@@ -1,6 +1,6 @@
 #  Adapted from work by ProrokLab (https://www.proroklab.org/)
 
-import torch
+import torch, random
 
 from vmas.simulator.core import World, Agent, Landmark
 from vmas.simulator.scenario import BaseScenario
@@ -47,15 +47,21 @@ class Scenario(BaseScenario):
                     [0.25, 0.25, 0.25], device=self.world.device, dtype=torch.float32
                 )
             # random properties for landmarks
-            self.world.landmarks[0].color = torch.tensor(
-                [0.75, 0.25, 0.25], device=self.world.device, dtype=torch.float32
-            )
-            self.world.landmarks[1].color = torch.tensor(
-                [0.25, 0.75, 0.25], device=self.world.device, dtype=torch.float32
-            )
-            self.world.landmarks[2].color = torch.tensor(
-                [0.25, 0.25, 0.75], device=self.world.device, dtype=torch.float32
-            )
+            colors = [
+                torch.tensor(
+                    [0.75, 0.25, 0.25], device=self.world.device, dtype=torch.float32
+                ),
+                torch.tensor(
+                    [0.25, 0.75, 0.25], device=self.world.device, dtype=torch.float32
+                ),
+                torch.tensor(
+                    [0.25, 0.25, 0.75], device=self.world.device, dtype=torch.float32
+                )
+            ]
+            # random.shuffle(colors)
+            self.world.landmarks[0].color = colors[0]
+            self.world.landmarks[1].color = colors[1]
+            self.world.landmarks[2].color = colors[2]
             # special colors for goals
             self.world.agents[0].goal_a.color = self.world.agents[0].goal_b.color
             self.world.agents[1].goal_a.color = self.world.agents[1].goal_b.color
@@ -125,12 +131,17 @@ class Scenario(BaseScenario):
 
         # get positions of all entities in this agent's reference frame
         entity_pos = []
+        entity_cols = []
         for entity in self.world.landmarks:
             entity_pos.append(
                 torch.bmm(
                     agent.ref_frame,
                     (entity.state.pos - agent.state.pos).unsqueeze(2)
                 ).squeeze(2)
+            )
+            color = torch.Tensor(entity.color)
+            entity_cols.append(
+                color.repeat(self.world.batch_dim, 1)
             )
 
         # communication of all other agents
@@ -143,6 +154,7 @@ class Scenario(BaseScenario):
             [
                 agent.state.vel,
                 *entity_pos,
+                # *entity_cols,
                 goal_color.repeat(self.world.batch_dim, 1),
                 *comm,
             ],

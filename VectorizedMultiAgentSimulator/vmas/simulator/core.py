@@ -2202,34 +2202,7 @@ class World(TorchVectorizedObject):
         W = torch.nn.functional.softmax(torch.bmm(MT, obs), dim = 1)
         S = torch.bmm(torch.transpose(W, 1, 2), MT)
         return torch.Tensor.squeeze(S, 1)
-
-    # Makes observation of Environment
-    def observation(self, agent: Agent):
-        # goal color
-        goal_color = agent.goal_b.color
-
-        # get positions of all entities in this agent's reference frame
-        entity_pos = []
-        for entity in self.landmarks:
-            entity_pos.append(entity.state.pos - agent.state.pos)
-
-        # communication of all other agents
-        comm = []
-        for other in self.agents:
-            if other is agent:
-                continue
-            loc_noise = agent.noise.sample(sample_shape=torch.Size(agent.action.c.shape)).squeeze(dim = 2) if agent.noise != None else 0.0
-            comm.append(other.state.c + loc_noise/2)
-        return torch.cat(
-            [
-                agent.state.vel,
-                *entity_pos,
-                goal_color.repeat(self.batch_dim, 1),
-                *comm,
-            ],
-            dim=-1,
-        )
-
+    
     def _update_comm_state(self, agent):
         # set communication state (directly for now)
         if not agent.silent:

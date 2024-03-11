@@ -171,5 +171,8 @@ cython_debug/
 # Trained Models
 **/evaluation/checkpoints/
 **/evaluation/stats
-**/evaluation/
+**/evaluation/comms
+**/evaluation/graphs
+**/evaluation/tuning_params
+**/evaluation/videos
 

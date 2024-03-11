@@ -45,6 +45,8 @@ from .vmas.simple_reference_const import TaskConfig as ConstSimpleRefConfig
 from .vmas.simple_reference_idiolect_const import TaskConfig as ConstSimpleRefIdioConfig
 from .vmas.simple_reference_idiolect_mem_buffer_const import TaskConfig as ConstSimpleRefIdioMemConfig
 from .vmas.simple_reference_idiolect_noise_mem_const import TaskConfig as ConstSimpleRefIdioNoiseMemConfig
+from .vmas.simple_reference_log import TaskConfig as SimpleRefLogConfig
+from .vmas.simple_reference_idiolect_log import TaskConfig as SimpleRefIdiolectLogConfig
 from .idiolectevo.speed_old import TaskConfig as SpeedOldConfig
 from .idiolectevo.speed_old_noise import TaskConfig as SpeedOldNoiseConfig
 from .idiolectevo.speed_old_mem_buffer import TaskConfig as SpeedOldMemBufferConfig
@@ -55,6 +57,30 @@ from .idiolectevo.speed_new_mem_buffer import TaskConfig as SpeedNewMemBufferCon
 from .idiolectevo.speed_new_noise_mem import TaskConfig as SpeedNewNoiseMemConfig
 from .idiolectevo.speed_old_const import TaskConfig as SpeedOldConstConfig
 from .idiolectevo.speed_old_noise_const import TaskConfig as SpeedOldNoiseConstConfig
+from .idiolectevo.novel_coord import TaskConfig as NovelCoordConfig
+from .idiolectevo.novel_coord_noise import TaskConfig as NovelCoordNoiseConfig
+from .idiolectevo.novel_coord_novel_color import TaskConfig as NovelCoordNovelColorConfig
+from .idiolectevo.novel_coord_novel_color_noise import TaskConfig as NovelCoordNovelColorNoiseConfig
+from .idiolectevo.adapt_color_0 import TaskConfig as AdaptColor0Config
+from .idiolectevo.adapt_color_1 import TaskConfig as AdaptColor1Config
+from .idiolectevo.adapt_color_2 import TaskConfig as AdaptColor2Config
+from .idiolectevo.adapt_color_3 import TaskConfig as AdaptColor3Config
+from .idiolectevo.adapt_color_4 import TaskConfig as AdaptColor4Config
+from .idiolectevo.adapt_color_5 import TaskConfig as AdaptColor5Config
+from .idiolectevo.adapt_color_6 import TaskConfig as AdaptColor6Config
+from .idiolectevo.adapt_color_7 import TaskConfig as AdaptColor7Config
+from .idiolectevo.adapt_color_8 import TaskConfig as AdaptColor8Config
+from .idiolectevo.adapt_color_9 import TaskConfig as AdaptColor9Config
+from .idiolectevo.adapt_color_noise_0 import TaskConfig as AdaptColorNoise0Config
+from .idiolectevo.adapt_color_noise_1 import TaskConfig as AdaptColorNoise1Config
+from .idiolectevo.adapt_color_noise_2 import TaskConfig as AdaptColorNoise2Config
+from .idiolectevo.adapt_color_noise_3 import TaskConfig as AdaptColorNoise3Config
+from .idiolectevo.adapt_color_noise_4 import TaskConfig as AdaptColorNoise4Config
+from .idiolectevo.adapt_color_noise_5 import TaskConfig as AdaptColorNoise5Config
+from .idiolectevo.adapt_color_noise_6 import TaskConfig as AdaptColorNoise6Config
+from .idiolectevo.adapt_color_noise_7 import TaskConfig as AdaptColorNoise7Config
+from .idiolectevo.adapt_color_noise_8 import TaskConfig as AdaptColorNoise8Config
+from .idiolectevo.adapt_color_noise_9 import TaskConfig as AdaptColorNoise9Config
 
 # This is a registry mapping task config schemas names to their python dataclass
 # It is used by hydra to validate loaded configs.
@@ -74,6 +100,8 @@ _task_class_registry = {
     "vmas_simple_reference_idiolect_const_config": ConstSimpleRefIdioConfig,
     "vmas_simple_reference_idiolect_mem_buffer_const_config": ConstSimpleRefIdioMemConfig,
     "vmas_simple_reference_idiolect_noise_mem_const_config": ConstSimpleRefIdioNoiseMemConfig,
+    "vmas_simple_reference_log_config": SimpleRefLogConfig,
+    "vmas_simple_reference_idiolect_log_config": SimpleRefIdiolectLogConfig,
     "pettingzoo_multiwalker_config": MultiwalkerConfig,
     "pettingzoo_waterworld_config": WaterworldConfig,
     "pettingzoo_simple_adversary_config": SimpleAdversaryConfig,
@@ -94,4 +122,28 @@ _task_class_registry = {
     "idiolectevo_speed_new_noise_mem": SpeedNewNoiseMemConfig,
     "idiolectevo_speed_old_const": SpeedOldConstConfig,
     "idiolectevo_speed_old_noise_const": SpeedOldNoiseConstConfig,
+    "idiolectevo_novel_coord": NovelCoordConfig,
+    "idiolectevo_novel_coord_noise": NovelCoordNoiseConfig,
+    "idiolectevo_novel_coord_novel_color": NovelCoordNovelColorConfig,
+    "idiolectevo_novel_coord_novel_color_noise": NovelCoordNovelColorNoiseConfig,
+    "idiolectevo_adapt_color_0": AdaptColor0Config,
+    "idiolectevo_adapt_color_1": AdaptColor1Config,
+    "idiolectevo_adapt_color_2": AdaptColor2Config,
+    "idiolectevo_adapt_color_3": AdaptColor3Config,
+    "idiolectevo_adapt_color_4": AdaptColor4Config,
+    "idiolectevo_adapt_color_5": AdaptColor5Config,
+    "idiolectevo_adapt_color_6": AdaptColor6Config,
+    "idiolectevo_adapt_color_7": AdaptColor7Config,
+    "idiolectevo_adapt_color_8": AdaptColor8Config,
+    "idiolectevo_adapt_color_9": AdaptColor9Config,
+    "idiolectevo_adapt_color_noise_0": AdaptColorNoise0Config,
+    "idiolectevo_adapt_color_noise__1": AdaptColorNoise1Config,
+    "idiolectevo_adapt_color_noise__2": AdaptColorNoise2Config,
+    "idiolectevo_adapt_color_noise__3": AdaptColorNoise3Config,
+    "idiolectevo_adapt_color_noise__4": AdaptColorNoise4Config,
+    "idiolectevo_adapt_color_noise__5": AdaptColorNoise5Config,
+    "idiolectevo_adapt_color_noise__6": AdaptColorNoise6Config,
+    "idiolectevo_adapt_color_noise__7": AdaptColorNoise7Config,
+    "idiolectevo_adapt_color_noise__8": AdaptColorNoise8Config,
+    "idiolectevo_adapt_color_noise__9": AdaptColorNoise9Config,
 }

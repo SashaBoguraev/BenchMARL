@@ -25,6 +25,30 @@ class IdiolectEvoTask(Task):
     SPEED_NEW_NOISE = None
     SPEED_NEW_MEM_BUFFER = None
     SPEED_NEW_NOISE_MEM = None
+    NOVEL_COORD = None
+    NOVEL_COORD_NOISE = None
+    NOVEL_COORD_NOVEL_COLOR = None
+    NOVEL_COORD_NOVEL_COLOR_NOISE = None
+    ADAPT_COLOR_0 = None
+    ADAPT_COLOR_1 = None
+    ADAPT_COLOR_2 = None
+    ADAPT_COLOR_3 = None
+    ADAPT_COLOR_4 = None
+    ADAPT_COLOR_5 = None
+    ADAPT_COLOR_6 = None
+    ADAPT_COLOR_7 = None
+    ADAPT_COLOR_8 = None
+    ADAPT_COLOR_9 = None
+    ADAPT_COLOR_NOISE_0 = None
+    ADAPT_COLOR_NOISE_1 = None
+    ADAPT_COLOR_NOISE_2 = None
+    ADAPT_COLOR_NOISE_3 = None
+    ADAPT_COLOR_NOISE_4 = None
+    ADAPT_COLOR_NOISE_5 = None
+    ADAPT_COLOR_NOISE_6 = None
+    ADAPT_COLOR_NOISE_7 = None
+    ADAPT_COLOR_NOISE_8 = None
+    ADAPT_COLOR_NOISE_9 = None
 
     def get_env_fun(
         self,

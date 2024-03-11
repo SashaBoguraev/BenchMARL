@@ -1,11 +1,4 @@
-from benchmarl.algorithms import MaddpgConfig
-from benchmarl.environments import IdiolectEvoTask, VmasTask
-from benchmarl.experiment import Experiment, ExperimentConfig
-from benchmarl.models.mlp import MlpConfig
-import torch, itertools, csv, os
-import numpy as np
-from scipy.stats import ttest_ind
-import matplotlib.pyplot as plt
+from eval import *
 
 def run_benchmark(task, PATH, seed):
     # Loads from "benchmarl/conf/experiment/base_experiment.yaml"
@@ -20,7 +13,6 @@ def run_benchmark(task, PATH, seed):
     experiment_config.render = False
     experiment_config.loggers = []
     experiment_config.checkpoint_interval = 100_000_000
-    experiment_config.share_policy_params = False
 
     # Some basic other configs
     algorithm_config = MaddpgConfig.get_from_yaml()
@@ -37,7 +29,10 @@ def run_benchmark(task, PATH, seed):
     )
 
     x = torch.load(PATH)
-    experiment = experiment.load_experiment_policy(x)
+
+    policy = experiment.algorithm.get_policy_for_collection()
+    policy.load_state_dict(x['collector']['policy_state_dict'])
+    experiment.policy = policy
     experiment.run(eval = True)
     reward = experiment.reward
     episode_reward = experiment.episode_reward
@@ -174,58 +169,53 @@ def graph_data(datasets, titles, type):
 
 def generate_data(paths, seed):
     # Get Paths
-    universal_path = paths[0]
-    noise_path = paths[1]
+    batched = paths[0]
+    unbatched = paths[1]
 
     # Get Stats for old environment
-    universal_old, universal_old_means, universal_old_graphs = run_benchmark(IdiolectEvoTask.SPEED_OLD.get_from_yaml(), universal_path, seed)
-    noise_old, noise_old_means, noise_old_graphs = run_benchmark(IdiolectEvoTask.SPEED_OLD_NOISE.get_from_yaml(), noise_path, seed)
-    old_evals = [universal_old, noise_old]
-    old_pairs = list(itertools.combinations(old_evals, 2))
-    old_graphs = [universal_old_graphs, noise_old_graphs]
+    batched_old, batched_old_means, batched_old_graphs = run_benchmark(IdiolectEvoTask.SPEED_OLD.get_from_yaml(), batched, seed)
+    unbatched_old, unbatched_old_means, unbatched_old_graphs = run_benchmark(IdiolectEvoTask.SPEED_OLD.get_from_yaml(), unbatched, seed)
+    old_evals = [batched_old, unbatched_old]
+    old_pair = [(batched_old, unbatched_old)]
+    old_graphs = [batched_old_graphs, unbatched_old_graphs]
 
     # Get Stats for new environment
-    universal_new, universal_new_means, universal_new_graphs = run_benchmark(IdiolectEvoTask.SPEED_NEW.get_from_yaml(), universal_path, seed)
-    noise_new, noise_new_means, noise_new_graphs = run_benchmark(IdiolectEvoTask.SPEED_NEW_NOISE.get_from_yaml(), noise_path, seed)
-    new_evals = [universal_new, noise_new]
-    new_pairs = list(itertools.combinations(new_evals, 2))
-    new_graphs = [universal_new_graphs, noise_new_graphs]
+    batched_new, batched_new_means, batched_new_graphs = run_benchmark(IdiolectEvoTask.SPEED_NEW.get_from_yaml(), batched, seed)
+    unbatched_new, unbatched_new_means, unbatched_new_graphs = run_benchmark(IdiolectEvoTask.SPEED_NEW.get_from_yaml(), unbatched, seed)
+    new_evals = [batched_new, unbatched_new]
+    new_pair = [(batched_new, unbatched_new)]
+    new_graphs = [batched_new_graphs, unbatched_new_graphs]
 
-    titles = ["Universal", "Noise"]
-
-    # Get names for all possible pairs
-    pairs = [
-        "universal - noise",
-    ]
+    titles = ["Batched", "Unbatched"]
 
     # Initialize the dictionaries for all p-values
     p_vals_old = {
-        "pairs": pairs,
+        "Titles": titles,
         "less": [],
         "greater": []
     }
     p_vals_new = {
-        "pairs": pairs,
+        "Titles": titles,
         "less": [],
         "greater": []
     }
 
     # Populate P-Value Dictionaries
-    eval_pairs(old_pairs, p_vals_old)
-    eval_pairs(new_pairs, p_vals_new)
+    eval_pairs(old_pair, p_vals_old)
+    eval_pairs(new_pair, p_vals_new)
 
     # Initialize the dictionaries for all means
     means_old = {
-        "universal": universal_old_means,
-        "noise": noise_old_means,
+        "batched": batched_old_means,
+        "unbatched": unbatched_old_means,
     }
     means_new = {
-        "universal": universal_new_means,
-        "noise": noise_new_means,
+        "batched": batched_new_means,
+        "unbatched": unbatched_new_means,
     }
     
     # Write results to files
-    output_folder = '/Users/sashaboguraev/Desktop/Cornell/College Scholar/BenchMARL/evaluation/stats'
+    output_folder = '/Users/sashaboguraev/Desktop/Cornell/College Scholar/BenchMARL/evaluation/stats/batched-unbatched'
     write_csv(os.path.join(output_folder, 'p_vals_old_seed'+str(seed)+'.csv'), p_vals_old)
     write_csv(os.path.join(output_folder, 'p_vals_new'+str(seed)+'.csv'), p_vals_new)
     write_csv(os.path.join(output_folder, 'means_old'+str(seed)+'.csv'), means_old, False)
@@ -236,11 +226,9 @@ def generate_data(paths, seed):
     graph_data(new_graphs, titles, "Novel_seed"+str(seed))
 
 if __name__ == "__main__":
-
     # Checkpoint paths
-    noise_path = "outputs/2024-01-13/10-16-06/maddpg_simple_reference_idiolect_mlp__730ca284_24_01_13-10_16_06/checkpoints/checkpoint_7500000.pt"
-    universal_path = "outputs/2024-01-12/19-24-21/maddpg_simple_reference_mlp__60890225_24_01_12-19_24_21/checkpoints/checkpoint_7500000.pt"
-    sim_paths = [universal_path, noise_path]
+    universal_batched = "evaluation/checkpoints/batched-unbatched/batched.pt"
+    universal_unbatched = "evaluation/checkpoints/batched-unbatched/unbatched.pt"
 
     # Seed
     seeds = 10
@@ -248,4 +236,5 @@ if __name__ == "__main__":
     # Generate Everything
     for seed in range(seeds):
         print("SEED ", seed)
+        seed = seed + 10
         generate_data(sim_paths, seed)

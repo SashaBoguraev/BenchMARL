@@ -146,7 +146,8 @@ class Scenario(BaseScenario):
         for other in self.world.agents:
             if other is agent:
                 continue
-            comm.append(other.state.c)
+            loc_noise = agent.noise.sample(sample_shape=(self.world.batch_dim, self.world.dim_c)).squeeze(dim = 2) if agent.noise != None else 0.0
+            comm.append(other.state.c + loc_noise/2)
         return torch.cat(
             [
                 agent.state.vel,
