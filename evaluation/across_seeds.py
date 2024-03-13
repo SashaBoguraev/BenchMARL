@@ -85,7 +85,7 @@ def plot_reward(shared_noiseless_stats, unshared_noiseless_stats, shared_noise_s
     }
 
     x = np.arange(len(labels))  # the label locations
-    width = 0.01  # the width of the bars
+    width = 0.2  # the width of the bars
     multiplier = 0 
     
 
@@ -104,7 +104,7 @@ def plot_reward(shared_noiseless_stats, unshared_noiseless_stats, shared_noise_s
     ax.set_xticks(x+width, labels)
     ax.legend()
 
-    plt.savefig(save_path+"mean_rewards.png")
+    plt.savefig(save_path+"mean_rewards.png", dpi=1000)
     plt.close()
 
 def plot_distributions(shared_noiseless_means, unshared_noiseless_means, shared_noise_means, unshared_noise_means, checkpoints, save_path):
@@ -121,32 +121,31 @@ if __name__ == "__main__":
 
     # Checkpoint Paths
     universal_path_shared_one =  "outputs/Final Models/2024-02-01/01-33-36/maddpg_simple_reference_mlp__0370dbb7_24_02_01-01_33_36/checkpoints/checkpoint_"
-    universal_path_shared_two = ""
-    universal_path_shared_three = ""
+    universal_path_shared_two = "outputs/2024-03-10/16-42-00/maddpg_simple_reference_mlp__ba90da34_24_03_10-16_42_00/checkpoints/checkpoint_"
+    universal_path_shared_three = "outputs/2024-03-11/10-59-22/maddpg_simple_reference_mlp__4fb2c2eb_24_03_11-10_59_22/checkpoints/checkpoint_"
     
     universal_path_unshared_one = "outputs/Final Models/10-31-32/maddpg_simple_reference_mlp__d5090c0f_24_01_15-10_31_32/checkpoints/checkpoint_"
     universal_path_unshared_two = "outputs/Final Models/01-00-18/maddpg_simple_reference_mlp__d06778fe_24_02_20-01_00_18/checkpoints/checkpoint_"
-    universal_path_unshared_three = ""
+    universal_path_unshared_three = "outputs/23-00-33/maddpg_simple_reference_mlp__c900fd76_24_03_11-23_00_35/checkpoints/checkpoint_"
 
     noise_path_shared_one = "outputs/Final Models/00-54-38/maddpg_simple_reference_idiolect_mlp__913becc1_24_02_20-00_54_38/checkpoints/checkpoint_"
-    noise_path_shared_two = ""
-    noise_path_shared_three = ""
+    noise_path_shared_two = "outputs/2024-03-11/00-18-48/maddpg_simple_reference_idiolect_mlp__118b494c_24_03_11-00_18_48/checkpoints/checkpoint_"
+    noise_path_shared_three = "outputs/2024-03-11/18-48-55/maddpg_simple_reference_idiolect_mlp__26cf9021_24_03_11-18_48_55/checkpoints/checkpoint_"
 
     noise_path_unshared_one = "outputs/Final Models/19-38-40/maddpg_simple_reference_idiolect_mlp__18300887_24_01_14-19_38_40/checkpoints/checkpoint_"
     noise_path_unshared_two = "outputs/Final Models/2024-02-01/19-07-50/maddpg_simple_reference_idiolect_mlp__2aa7883e_24_02_01-19_07_50/checkpoints/checkpoint_"
-    noise_path_unshared_three = ""
-    
+    noise_path_unshared_three = "outputs/2024-03-12/01-09-30/maddpg_simple_reference_idiolect_mlp__9c92345a_24_03_12-01_09_30/checkpoints/checkpoint_"
+
     shared_noiseless_paths = [universal_path_shared_one, universal_path_shared_two, universal_path_shared_three]
     unshared_noiseless_paths = [universal_path_unshared_one, universal_path_unshared_two, universal_path_unshared_three]
     shared_noise_paths = [noise_path_shared_one, noise_path_shared_two, noise_path_shared_three]
     unshared_noise_paths = [noise_path_unshared_one, noise_path_unshared_two, noise_path_unshared_three]
 
     # Checkpoints
-    # checkpoints = range(300000, 5700000, 300000)
-    checkpoints = range(5100000, 5700000, 300000)
+    checkpoints = range(300000, 5700000, 300000)
 
     # Seeds
-    seeds = 1
+    seeds = 5
 
     plot_means(shared_noiseless_paths, unshared_noiseless_paths, shared_noise_paths, unshared_noise_paths, seeds, checkpoints, new=False, save_path="evaluation/graphs/3-15-update/old_evals/")
     plot_means(shared_noiseless_paths, unshared_noiseless_paths, shared_noise_paths, unshared_noise_paths, seeds, checkpoints, new=True, save_path="evaluation/graphs/3-15-update/new_evals/")

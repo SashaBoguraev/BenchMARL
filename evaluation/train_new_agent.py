@@ -173,12 +173,12 @@ def agent_integration(task, PATH_ONE, PATH_TWO, seed, agent, shared, save_path =
         experiment_config.save_folder = save_path
 
     else:
-        experiment_config.off_policy_n_envs_per_worker = 1_000
-        experiment_config.off_policy_collected_frames_per_batch = 100_000
-        experiment_config.max_n_frames = 100_000
+        experiment_config.off_policy_n_envs_per_worker = 100
+        experiment_config.off_policy_collected_frames_per_batch = 10_000
+        experiment_config.max_n_frames = 10_000
         experiment_config.evaluation = False
         experiment_config.render = False
-        experiment_config.loggers = ["csv"]
+        experiment_config.loggers = []
         experiment_config.checkpoint_interval = 10_000_000
 
     experiment = Experiment(
@@ -432,23 +432,23 @@ if __name__ == "__main__":
 
     # Checkpoint Paths
     universal_path_shared_one =  "outputs/Final Models/2024-02-01/01-33-36/maddpg_simple_reference_mlp__0370dbb7_24_02_01-01_33_36/checkpoints/"
-    universal_path_shared_two = "outputs/Final Models/2024-02-01/01-33-36/maddpg_simple_reference_mlp__0370dbb7_24_02_01-01_33_36/checkpoints/"
-    universal_path_shared_three = "outputs/Final Models/2024-02-01/01-33-36/maddpg_simple_reference_mlp__0370dbb7_24_02_01-01_33_36/checkpoints/"
+    universal_path_shared_two = "outputs/2024-03-10/16-42-00/maddpg_simple_reference_mlp__ba90da34_24_03_10-16_42_00/checkpoints/"
+    universal_path_shared_three = "outputs/2024-03-11/10-59-22/maddpg_simple_reference_mlp__4fb2c2eb_24_03_11-10_59_22/checkpoints/"
     
     universal_path_unshared_one = "outputs/Final Models/10-31-32/maddpg_simple_reference_mlp__d5090c0f_24_01_15-10_31_32/checkpoints/"
     universal_path_unshared_two = "outputs/Final Models/01-00-18/maddpg_simple_reference_mlp__d06778fe_24_02_20-01_00_18/checkpoints/"
-    universal_path_unshared_three = ""
+    universal_path_unshared_three = "outputs/23-00-33/maddpg_simple_reference_mlp__c900fd76_24_03_11-23_00_35/checkpoints/"
 
     noise_path_shared_one = "outputs/Final Models/00-54-38/maddpg_simple_reference_idiolect_mlp__913becc1_24_02_20-00_54_38/checkpoints/"
-    noise_path_shared_two = ""
-    noise_path_shared_three = ""
+    noise_path_shared_two = "outputs/2024-03-11/00-18-48/maddpg_simple_reference_idiolect_mlp__118b494c_24_03_11-00_18_48/checkpoints/"
+    noise_path_shared_three = "outputs/2024-03-11/18-48-55/maddpg_simple_reference_idiolect_mlp__26cf9021_24_03_11-18_48_55/checkpoints/"
 
     noise_path_unshared_one = "outputs/Final Models/19-38-40/maddpg_simple_reference_idiolect_mlp__18300887_24_01_14-19_38_40/checkpoints/"
     noise_path_unshared_two = "outputs/Final Models/2024-02-01/19-07-50/maddpg_simple_reference_idiolect_mlp__2aa7883e_24_02_01-19_07_50/checkpoints/"
-    noise_path_unshared_three = ""
+    noise_path_unshared_three = "outputs/2024-03-12/01-09-30/maddpg_simple_reference_idiolect_mlp__9c92345a_24_03_12-01_09_30/checkpoints/"
 
     # Changeable params
-    seeds = 1
+    seeds = 5
     combs = 5
     agent = 0
     save_path = "/Users/sashaboguraev/Desktop/Cornell/College Scholar/BenchMARL/evaluation/graphs/3-15-update/"
@@ -459,11 +459,20 @@ if __name__ == "__main__":
         shared_noise_paths = [noise_path_shared_one, noise_path_shared_two, noise_path_shared_three]
         unshared_noise_paths = [noise_path_unshared_one, noise_path_unshared_two, noise_path_unshared_three]
 
-        checkpoints = range(5100000, 5700000, 300000)
+        checkpoints = range(600000, 5700000, 600000)
         
+        # Heatmap in trained env
         plot_heatmap(shared_noiseless_paths, task=VmasTask.SIMPLE_REFERENCE.get_from_yaml(), shared=True, seeds=seeds, checkpoints=checkpoints, save_path=save_path+"heatmaps/", scenario="shared_noiseless")
+        plot_heatmap(unshared_noiseless_paths, task=VmasTask.SIMPLE_REFERENCE.get_from_yaml(), shared=False, seeds=seeds, checkpoints=checkpoints, save_path=save_path+"heatmaps/", scenario="unshared_noiseless")
+        plot_heatmap(shared_noise_paths, task=VmasTask.SIMPLE_REFERENCE_IDIOLECT.get_from_yaml(), shared=True, seeds=seeds, checkpoints=checkpoints, save_path=save_path+"heatmaps/", scenario="shared_noise")
+        plot_heatmap(unshared_noise_paths, task=VmasTask.SIMPLE_REFERENCE_IDIOLECT.get_from_yaml(), shared=False, seeds=seeds, checkpoints=checkpoints, save_path=save_path+"heatmaps/", scenario="unshared_noise")
+        # Other enviornment than trained on
+        plot_heatmap(shared_noiseless_paths, task=VmasTask.SIMPLE_REFERENCE_IDIOLECT.get_from_yaml(), shared=True, seeds=seeds, checkpoints=checkpoints, save_path=save_path+"heatmaps/other_env/", scenario="shared_noiseless")
+        plot_heatmap(shared_noise_paths, task=VmasTask.SIMPLE_REFERENCE.get_from_yaml(), shared=True, seeds=seeds, checkpoints=checkpoints, save_path=save_path+"heatmaps/other_env/", scenario="shared_noise")
+        plot_heatmap(unshared_noiseless_paths, task=VmasTask.SIMPLE_REFERENCE_IDIOLECT.get_from_yaml(), shared=False, seeds=seeds, checkpoints=checkpoints, save_path=save_path+"heatmaps/other_env/", scenario="unshared_noiseless")
+        plot_heatmap(unshared_noise_paths, task=VmasTask.SIMPLE_REFERENCE.get_from_yaml(), shared=False, seeds=seeds, checkpoints=checkpoints, save_path=save_path+"heatmaps/other_env/", scenario="unshared_noise")
 
-    elif not log_comms:
+    elif vis:
         # Paths
         noiseless = [universal_path_shared_one, universal_path_shared_two, universal_path_unshared_one, universal_path_unshared_two]
         noisy = [noise_path_shared_one, noise_path_shared_two, noise_path_unshared_one, noise_path_unshared_two]
@@ -472,15 +481,8 @@ if __name__ == "__main__":
         perform_comp(paths=noiseless, task=VmasTask.SIMPLE_REFERENCE.get_from_yaml(), vis=vis, seeds=seeds, combs=combs, agent=agent, save_path=save_path+"NoNoise/")
         perform_comp(paths=noisy, task=VmasTask.SIMPLE_REFERENCE_IDIOLECT.get_from_yaml(), vis=vis, seeds=seeds, combs=combs, agent=agent, save_path=save_path+"WithNoise/")
     
-    else:
-        # print("COMPARISON ONE")
-        # compare_nested_dicts(torch.load(universal_path_shared_one+"/checkpoint_4200000.pt"), torch.load(universal_path_shared_two+"/checkpoint_4200000.pt"))
-        # print("COMPARISON TWO")
-        # compare_nested_dicts(torch.load(universal_path_unshared_one+"/checkpoint_4200000.pt"), torch.load(universal_path_unshared_two+"/checkpoint_4200000.pt"))
-        # print("COMPARISON THREE")
-        # compare_nested_dicts(torch.load(noise_path_shared_one+"/checkpoint_4200000.pt"), torch.load(noise_path_shared_two+"/checkpoint_4200000.pt"))
-        # print("COMPARISON FOUR")
-        compare_nested_dicts(torch.load(noise_path_unshared_one+"/checkpoint_4200000.pt"), torch.load(noise_path_unshared_two+"/checkpoint_4200000.pt"))
-        # pol1 = get_comms(VmasTask.SIMPLE_REFERENCE_IDIOLECT_LOG.get_from_yaml(), noise_path_shared_two, noise_path_shared_two, shared=True, seed = 2, agent = 0)
-        # pol2 = get_comms(VmasTask.SIMPLE_REFERENCE_IDIOLECT_LOG.get_from_yaml(), noise_path_shared_one, noise_path_shared_two, shared=True, seed = 2, agent = 0)
-        # compare_nested_dicts(pol1, pol2)
+    elif log_comms:
+        pol1 = get_comms(VmasTask.SIMPLE_REFERENCE.get_from_yaml(), universal_path_shared_one, universal_path_shared_two, shared=True, seed = 2, agent = 0)
+        pol2 = get_comms(VmasTask.SIMPLE_REFERENCE_IDIOLECT.get_from_yaml(), noise_path_shared_one, noise_path_shared_two, shared=True, seed = 2, agent = 0)
+    # for seed in range(seeds):
+    #     pol1 = get_comms(VmasTask.SIMPLE_REFERENCE.get_from_yaml(), universal_path_shared_one, universal_path_shared_three, shared=True, seed = seed, agent = 0)
