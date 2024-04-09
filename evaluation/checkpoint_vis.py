@@ -72,7 +72,7 @@ if __name__ == "__main__":
     # Seed
     seeds = 1
 
-    # # # Run Shared Evaluations
+    # # Run Shared Evaluations
     # for idx, pair in enumerate(shared_pairs):
     #     save_path = save_folder+"/original_env/" if idx<2 else save_folder+"/novel_env/"
         
@@ -88,8 +88,8 @@ if __name__ == "__main__":
     #     load_path = pair[0]
     #     task = pair[1]
     #     run_benchmark(task = task, load_path=load_path, save_path=save_path, seed=seed, share_params=False)
-    # Combinations per Seed
     
+    # Combinations per Seed
     combs = 5
 
     # Get Checkpoints

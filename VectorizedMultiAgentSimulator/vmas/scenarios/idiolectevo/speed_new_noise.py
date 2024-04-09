@@ -68,8 +68,8 @@ class Scenario(BaseScenario):
                     [peak, random.uniform(0, peak-.15), random.uniform(0, peak-.15)], device=self.world.device, dtype=torch.float32
                 )
             ]
-            print(colors)
-            # gives colors in correct peak order
+            
+            gives colors in correct peak order
             self.world.landmarks[0].color = colors[2]
             self.world.landmarks[1].color = colors[1]
             self.world.landmarks[2].color = colors[0]

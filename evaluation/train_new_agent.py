@@ -436,16 +436,16 @@ if __name__ == "__main__":
     universal_path_shared_three = "outputs/2024-03-11/10-59-22/maddpg_simple_reference_mlp__4fb2c2eb_24_03_11-10_59_22/checkpoints/"
     
     universal_path_unshared_one = "outputs/Final Models/10-31-32/maddpg_simple_reference_mlp__d5090c0f_24_01_15-10_31_32/checkpoints/"
-    universal_path_unshared_two = "outputs/Final Models/01-00-18/maddpg_simple_reference_mlp__d06778fe_24_02_20-01_00_18/checkpoints/"
-    universal_path_unshared_three = "outputs/23-00-33/maddpg_simple_reference_mlp__c900fd76_24_03_11-23_00_35/checkpoints/"
+    universal_path_unshared_two = "outputs/23-00-33/maddpg_simple_reference_mlp__c900fd76_24_03_11-23_00_35/checkpoints/"
+    universal_path_unshared_three = "outputs/08-09-22/maddpg_simple_reference_mlp__f34d3da6_24_03_13-08_09_29/checkpoints/"
 
     noise_path_shared_one = "outputs/Final Models/00-54-38/maddpg_simple_reference_idiolect_mlp__913becc1_24_02_20-00_54_38/checkpoints/"
     noise_path_shared_two = "outputs/2024-03-11/00-18-48/maddpg_simple_reference_idiolect_mlp__118b494c_24_03_11-00_18_48/checkpoints/"
     noise_path_shared_three = "outputs/2024-03-11/18-48-55/maddpg_simple_reference_idiolect_mlp__26cf9021_24_03_11-18_48_55/checkpoints/"
 
     noise_path_unshared_one = "outputs/Final Models/19-38-40/maddpg_simple_reference_idiolect_mlp__18300887_24_01_14-19_38_40/checkpoints/"
-    noise_path_unshared_two = "outputs/Final Models/2024-02-01/19-07-50/maddpg_simple_reference_idiolect_mlp__2aa7883e_24_02_01-19_07_50/checkpoints/"
-    noise_path_unshared_three = "outputs/2024-03-12/01-09-30/maddpg_simple_reference_idiolect_mlp__9c92345a_24_03_12-01_09_30/checkpoints/"
+    noise_path_unshared_two = "outputs/2024-03-12/01-09-30/maddpg_simple_reference_idiolect_mlp__9c92345a_24_03_12-01_09_30/checkpoints/"
+    noise_path_unshared_three = "outputs/16_21_21/"
 
     # Changeable params
     seeds = 5
@@ -462,13 +462,13 @@ if __name__ == "__main__":
         checkpoints = range(600000, 5700000, 600000)
         
         # Heatmap in trained env
-        plot_heatmap(shared_noiseless_paths, task=VmasTask.SIMPLE_REFERENCE.get_from_yaml(), shared=True, seeds=seeds, checkpoints=checkpoints, save_path=save_path+"heatmaps/", scenario="shared_noiseless")
+        # plot_heatmap(shared_noiseless_paths, task=VmasTask.SIMPLE_REFERENCE.get_from_yaml(), shared=True, seeds=seeds, checkpoints=checkpoints, save_path=save_path+"heatmaps/", scenario="shared_noiseless")
         plot_heatmap(unshared_noiseless_paths, task=VmasTask.SIMPLE_REFERENCE.get_from_yaml(), shared=False, seeds=seeds, checkpoints=checkpoints, save_path=save_path+"heatmaps/", scenario="unshared_noiseless")
-        plot_heatmap(shared_noise_paths, task=VmasTask.SIMPLE_REFERENCE_IDIOLECT.get_from_yaml(), shared=True, seeds=seeds, checkpoints=checkpoints, save_path=save_path+"heatmaps/", scenario="shared_noise")
+        # plot_heatmap(shared_noise_paths, task=VmasTask.SIMPLE_REFERENCE_IDIOLECT.get_from_yaml(), shared=True, seeds=seeds, checkpoints=checkpoints, save_path=save_path+"heatmaps/", scenario="shared_noise")
         plot_heatmap(unshared_noise_paths, task=VmasTask.SIMPLE_REFERENCE_IDIOLECT.get_from_yaml(), shared=False, seeds=seeds, checkpoints=checkpoints, save_path=save_path+"heatmaps/", scenario="unshared_noise")
         # Other enviornment than trained on
-        plot_heatmap(shared_noiseless_paths, task=VmasTask.SIMPLE_REFERENCE_IDIOLECT.get_from_yaml(), shared=True, seeds=seeds, checkpoints=checkpoints, save_path=save_path+"heatmaps/other_env/", scenario="shared_noiseless")
-        plot_heatmap(shared_noise_paths, task=VmasTask.SIMPLE_REFERENCE.get_from_yaml(), shared=True, seeds=seeds, checkpoints=checkpoints, save_path=save_path+"heatmaps/other_env/", scenario="shared_noise")
+        # plot_heatmap(shared_noiseless_paths, task=VmasTask.SIMPLE_REFERENCE_IDIOLECT.get_from_yaml(), shared=True, seeds=seeds, checkpoints=checkpoints, save_path=save_path+"heatmaps/other_env/", scenario="shared_noiseless")
+        # plot_heatmap(shared_noise_paths, task=VmasTask.SIMPLE_REFERENCE.get_from_yaml(), shared=True, seeds=seeds, checkpoints=checkpoints, save_path=save_path+"heatmaps/other_env/", scenario="shared_noise")
         plot_heatmap(unshared_noiseless_paths, task=VmasTask.SIMPLE_REFERENCE_IDIOLECT.get_from_yaml(), shared=False, seeds=seeds, checkpoints=checkpoints, save_path=save_path+"heatmaps/other_env/", scenario="unshared_noiseless")
         plot_heatmap(unshared_noise_paths, task=VmasTask.SIMPLE_REFERENCE.get_from_yaml(), shared=False, seeds=seeds, checkpoints=checkpoints, save_path=save_path+"heatmaps/other_env/", scenario="unshared_noise")
 
