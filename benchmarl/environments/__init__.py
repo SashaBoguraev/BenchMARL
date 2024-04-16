@@ -81,6 +81,16 @@ from .idiolectevo.adapt_color_noise_6 import TaskConfig as AdaptColorNoise6Confi
 from .idiolectevo.adapt_color_noise_7 import TaskConfig as AdaptColorNoise7Config
 from .idiolectevo.adapt_color_noise_8 import TaskConfig as AdaptColorNoise8Config
 from .idiolectevo.adapt_color_noise_9 import TaskConfig as AdaptColorNoise9Config
+from .vmas.simple_reference_ext_noise2 import TaskConfig as SimpleReferenceExtNoise2Config
+from .vmas.simple_reference_ext_noise4 import TaskConfig as SimpleReferenceExtNoise4Config
+from .vmas.simple_reference_ext_noise6 import TaskConfig as SimpleReferenceExtNoise6Config
+from .vmas.simple_reference_ext_noise8 import TaskConfig as SimpleReferenceExtNoise8Config
+from .vmas.simple_reference_ext_noise10 import TaskConfig as SimpleReferenceExtNoise10Config
+from .vmas.simple_reference_idiolect_ext_noise2 import TaskConfig as SimpleReferenceIdiolectExtNoise2Config
+from .vmas.simple_reference_idiolect_ext_noise4 import TaskConfig as SimpleReferenceIdiolectExtNoise4Config
+from .vmas.simple_reference_idiolect_ext_noise6 import TaskConfig as SimpleReferenceIdiolectExtNoise6Config
+from .vmas.simple_reference_idiolect_ext_noise8 import TaskConfig as SimpleReferenceIdiolectExtNoise8Config
+from .vmas.simple_reference_idiolect_ext_noise10 import TaskConfig as SimpleReferenceIdiolectExtNoise10Config
 
 # This is a registry mapping task config schemas names to their python dataclass
 # It is used by hydra to validate loaded configs.
@@ -102,6 +112,16 @@ _task_class_registry = {
     "vmas_simple_reference_idiolect_noise_mem_const_config": ConstSimpleRefIdioNoiseMemConfig,
     "vmas_simple_reference_log_config": SimpleRefLogConfig,
     "vmas_simple_reference_idiolect_log_config": SimpleRefIdiolectLogConfig,
+    "vmas_simple_reference_ext_noise2": SimpleReferenceExtNoise2Config, 
+    "vmas_simple_reference_ext_noise2": SimpleReferenceExtNoise4Config, 
+    "vmas_simple_reference_ext_noise2": SimpleReferenceExtNoise6Config, 
+    "vmas_simple_reference_ext_noise2": SimpleReferenceExtNoise8Config, 
+    "vmas_simple_reference_ext_noise2": SimpleReferenceExtNoise10Config, 
+    "vmas_simple_reference_idiolect_ext_noise2": SimpleReferenceIdiolectExtNoise2Config, 
+    "vmas_simple_reference_idiolect_ext_noise4": SimpleReferenceIdiolectExtNoise4Config, 
+    "vmas_simple_reference_idiolect_ext_noise6": SimpleReferenceIdiolectExtNoise6Config, 
+    "vmas_simple_reference_idiolect_ext_noise8": SimpleReferenceIdiolectExtNoise8Config, 
+    "vmas_simple_reference_idiolect_ext_noise10": SimpleReferenceIdiolectExtNoise10Config, 
     "pettingzoo_multiwalker_config": MultiwalkerConfig,
     "pettingzoo_waterworld_config": WaterworldConfig,
     "pettingzoo_simple_adversary_config": SimpleAdversaryConfig,

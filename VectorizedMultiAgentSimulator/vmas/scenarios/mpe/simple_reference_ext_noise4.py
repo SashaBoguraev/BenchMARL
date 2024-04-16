@@ -1,7 +1,12 @@
+#  Copyright (c) 2022-2023.
+#  ProrokLab (https://www.proroklab.org/)
+#  All rights reserved.
+
 import torch, random
 
-from VectorizedMultiAgentSimulator.vmas.simulator.core import World, Agent, Landmark
-from VectorizedMultiAgentSimulator.vmas.simulator.scenario import BaseScenario
+from vmas.simulator.core import World, Agent, Landmark
+from vmas.simulator.scenario import BaseScenario
+
 
 class Scenario(BaseScenario):
     def make_world(self, batch_dim: int, device: torch.device, **kwargs):
@@ -44,32 +49,22 @@ class Scenario(BaseScenario):
                 agent.color = torch.tensor(
                     [0.25, 0.25, 0.25], device=self.world.device, dtype=torch.float32
                 )
-            # set colors for landmarks
-            # self.world.landmarks[0].color = torch.rand(
-            #         3, device=self.world.device, dtype=torch.float32
-            # )
-            # self.world.landmarks[1].color = torch.rand(
-            #         3, device=self.world.device, dtype=torch.float32
-            # )
-            # self.world.landmarks[2].color = torch.rand(
-            #         3, device=self.world.device, dtype=torch.float32
-            # )
-            peak = .75
+            # random properties for landmarks
             colors = [
                 torch.tensor(
-                    [random.uniform(0, peak-.15), random.uniform(0, peak-.15), peak], device=self.world.device, dtype=torch.float32
+                    [0.75, 0.25, 0.25], device=self.world.device, dtype=torch.float32
+                ), 
+                torch.tensor(
+                    [0.25, 0.75, 0.25], device=self.world.device, dtype=torch.float32
                 ),
                 torch.tensor(
-                    [random.uniform(0, peak-.15), peak, random.uniform(0, peak-.15)], device=self.world.device, dtype=torch.float32
-                ),
-                torch.tensor(
-                    [peak, random.uniform(0, peak-.15), random.uniform(0, peak-.15)], device=self.world.device, dtype=torch.float32
+                    [0.25, 0.25, 0.75], device=self.world.device, dtype=torch.float32
                 )
             ]
-            # gives colors in correct peak order
-            self.world.landmarks[0].color = colors[2]
+            # random.shuffle(colors)
+            self.world.landmarks[0].color = colors[0]
             self.world.landmarks[1].color = colors[1]
-            self.world.landmarks[2].color = colors[0] 
+            self.world.landmarks[2].color = colors[2]
             # special colors for goals
             self.world.agents[0].goal_a.color = self.world.agents[0].goal_b.color
             self.world.agents[1].goal_a.color = self.world.agents[1].goal_b.color
@@ -95,7 +90,7 @@ class Scenario(BaseScenario):
                 agent.ref_frame = torch.Tensor([[0.7729, 0.8743],[0.1327, 0.7566]]).unsqueeze(0).repeat(self.world.batch_dim, 1, 1)
             else:
                 print("NO REFERENCE FRAME FOR "+self.name+" AS THERE ARE MORE THAN TWO AGENTS")
-             
+            
         for landmark in self.world.landmarks:
             landmark.set_pos(
                 torch.zeros(
@@ -150,10 +145,12 @@ class Scenario(BaseScenario):
 
         # communication of all other agents
         comm = []
+        external_noise = torch.randn(torch.Size(agent.state.c.shape))
         for other in self.world.agents:
             if other is agent:
                 continue
-            comm.append(other.state.c)
+            loc_noise = agent.noise.sample(sample_shape=torch.Size(agent.state.c.shape)).squeeze(dim = 2) if agent.noise != None else 0.0
+            comm.append(other.state.c + loc_noise/2 + external_noise*.4)
         return torch.cat(
             [
                 agent.state.vel,

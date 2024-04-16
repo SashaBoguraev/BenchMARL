@@ -69,7 +69,7 @@ class Scenario(BaseScenario):
                 )
             ]
             
-            gives colors in correct peak order
+            # gives colors in correct peak order
             self.world.landmarks[0].color = colors[2]
             self.world.landmarks[1].color = colors[1]
             self.world.landmarks[2].color = colors[0]
