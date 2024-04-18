@@ -129,13 +129,13 @@ if __name__ == "__main__":
     universal_path_unshared_two = "outputs/23-00-33/maddpg_simple_reference_mlp__c900fd76_24_03_11-23_00_35/checkpoints/checkpoint_"
     universal_path_unshared_three = "outputs/08-09-22/maddpg_simple_reference_mlp__f34d3da6_24_03_13-08_09_29/checkpoints/checkpoint_"
 
-    noise_path_shared_one = "outputs/Final Models/00-54-38/maddpg_simple_reference_idiolect_mlp__913becc1_24_02_20-00_54_38/checkpoints/checkpoint_"
-    noise_path_shared_two = "outputs/2024-03-11/00-18-48/maddpg_simple_reference_idiolect_mlp__118b494c_24_03_11-00_18_48/checkpoints/checkpoint_"
-    noise_path_shared_three = "outputs/2024-03-11/18-48-55/maddpg_simple_reference_idiolect_mlp__26cf9021_24_03_11-18_48_55/checkpoints/checkpoint_"
+    noise_path_shared_one = "outputs/00-18-48/"
+    noise_path_shared_two = "outputs/03-32-50/"
+    noise_path_shared_three = "outputs/06-34-51"
 
-    noise_path_unshared_one = "outputs/Final Models/19-38-40/maddpg_simple_reference_idiolect_mlp__18300887_24_01_14-19_38_40/checkpoints/checkpoint_"
-    noise_path_unshared_two = "outputs/2024-03-12/01-09-30/maddpg_simple_reference_idiolect_mlp__9c92345a_24_03_12-01_09_30/checkpoints/checkpoint_"
-    noise_path_unshared_three = "outputs/16_21_21/checkpoint_"
+    noise_path_unshared_one = "outputs/20-39-49/"
+    noise_path_unshared_two = ""
+    noise_path_unshared_three = "outputs/11-49-13/"
 
     shared_noiseless_paths = [universal_path_shared_one, universal_path_shared_two, universal_path_shared_three]
     unshared_noiseless_paths = [universal_path_unshared_one, universal_path_unshared_two, universal_path_unshared_three]
@@ -148,5 +148,5 @@ if __name__ == "__main__":
     # Seeds
     seeds = 5
 
-    plot_means(shared_noiseless_paths, unshared_noiseless_paths, shared_noise_paths, unshared_noise_paths, seeds, checkpoints, new=False, save_path="evaluation/graphs/3-15-update/old_evals/")
-    plot_means(shared_noiseless_paths, unshared_noiseless_paths, shared_noise_paths, unshared_noise_paths, seeds, checkpoints, new=True, save_path="evaluation/graphs/3-15-update/new_evals/")
+    plot_means(shared_noiseless_paths, unshared_noiseless_paths, shared_noise_paths, unshared_noise_paths, seeds, checkpoints, new=False, save_path="evaluation/graphs/4-18-update/old_evals/")
+    plot_means(shared_noiseless_paths, unshared_noiseless_paths, shared_noise_paths, unshared_noise_paths, seeds, checkpoints, new=True, save_path="evaluation/graphs/4-18-update/new_evals/")
